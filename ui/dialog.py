@@ -35,6 +35,9 @@ class DialogBox():
         """
         self.i = i
         self.o = o
+        self.in_foreground = False
+        self.pointer = 0
+
         self.name = name
         if isinstance(values, str):
             self.values = []
@@ -51,11 +54,13 @@ class DialogBox():
         self.generate_keymap()
 
     def to_foreground(self):
+        """brings dialog to foreground"""
         self.in_foreground = True
         self.refresh()
         self.set_keymap()
 
     def activate(self):
+        """causes dialog to be shown"""
         logging.info("{0} activated".format(self.name))
         self.o.cursor()
         self.to_foreground()
@@ -71,10 +76,12 @@ class DialogBox():
             return None
 
     def deactivate(self):
+        """hides dialog"""
         self.in_foreground = False
         logging.info("{0} deactivated".format(self.name))    
 
     def generate_keymap(self):
+        """maps keys to actions"""
         self.keymap = {
             "KEY_RIGHT":lambda: self.move_right(),
             "KEY_LEFT":lambda: self.move_left(),
@@ -83,12 +90,14 @@ class DialogBox():
         }
 
     def set_keymap(self):
+        """assigns key map to input device"""
         self.i.stop_listen()
         self.i.clear_keymap()
         self.i.keymap = self.keymap
         self.i.listen()
 
     def move_left(self):
+        """moves caret one character left"""
         if self.pointer == 0:
             self.deactivate()
             return
@@ -96,16 +105,19 @@ class DialogBox():
         self.refresh()
 
     def move_right(self):
+        """moves caret one character right"""
         if self.pointer == len(self.values)-1:
             return
         self.pointer += 1
         self.refresh()
 
     def accept_value(self):
+        """accepts input from input device"""
         self.value_selected = True
         self.deactivate()
 
     def process_values(self):
+        """creates text and metadata for dialog display on output device"""
         self.labels = [label for label, value in self.values]
         label_string = " ".join(self.labels)
         if len(label_string) > self.o.cols:
@@ -123,5 +135,6 @@ class DialogBox():
             current_position += len(label) + 1
 
     def refresh(self):
+        """refreshes text on output device"""
         self.o.setCursor(1, self.positions[self.pointer])
         self.o.display_data(self.message, self.displayed_label)
