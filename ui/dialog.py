@@ -1,3 +1,7 @@
+"""
+Dialog box class
+"""
+
 from time import sleep
 import logging
 
@@ -15,14 +19,17 @@ class DialogBox():
 
             * ``values``: values to be used. Should be a list of ``[label, returned_value]`` pairs.
 
-              * You can also pass a string "yn" to get "Yes(True), No(False)" options, or "ync" to get "Yes(True), No(False), Cancel(None)" options.
-              * Values put together with spaces between them shouldn't be longer than the screen's width.
+            * You can also pass a string "yn" to get "Yes(True), No(False)" options,
+                or "ync" to get "Yes(True), No(False), Cancel(None)" options.
+            * Values put together with spaces between them shouldn't
+                be longer than the screen's width.
 
             * ``i``, ``o``: input&output device objects
 
         Kwargs:
 
-            * ``message``: Message to be shown on the first line of the screen when UI element is activated
+            * ``message``: Message to be shown on the first line of the screen when
+                UI element is activated
             * ``name``: UI element name which can be used internally and for debugging.
 
         """
@@ -49,9 +56,9 @@ class DialogBox():
         self.set_keymap()
 
     def activate(self):
-        logging.info("{0} activated".format(self.name))    
+        logging.info("{0} activated".format(self.name))
         self.o.cursor()
-        self.to_foreground() 
+        self.to_foreground()
         self.value_selected = False
         self.pointer = 0
         while self.in_foreground: #All the work is done in input callbacks
@@ -69,10 +76,10 @@ class DialogBox():
 
     def generate_keymap(self):
         self.keymap = {
-        "KEY_RIGHT":lambda: self.move_right(),
-        "KEY_LEFT":lambda: self.move_left(),
-        "KEY_KPENTER":lambda: self.accept_value(),
-        "KEY_ENTER":lambda: self.accept_value()
+            "KEY_RIGHT":lambda: self.move_right(),
+            "KEY_LEFT":lambda: self.move_left(),
+            "KEY_KPENTER":lambda: self.accept_value(),
+            "KEY_ENTER":lambda: self.accept_value()
         }
 
     def set_keymap(self):
@@ -102,10 +109,13 @@ class DialogBox():
         self.labels = [label for label, value in self.values]
         label_string = " ".join(self.labels)
         if len(label_string) > self.o.cols:
-            raise ValueError("DialogBox {}: all values combined are longer than screen's width".format(self.name))
+            error_message = "DialogBox {}: all values combined are" \
+            " longer than screen's width".format(self.name)
+            raise ValueError(error_message)
         self.right_offset = (self.o.cols - len(label_string))/2
         self.displayed_label = " "*self.right_offset+label_string
-        #Need to go through the string to mark the first places because we need to remember where to put the cursors
+        #Need to go through the string to mark the first places
+        #because we need to remember where to put the cursors
         current_position = self.right_offset
         self.positions = []
         for label in self.labels:
