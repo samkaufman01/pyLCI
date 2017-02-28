@@ -8,11 +8,10 @@ import logging
 class DialogBox():
     """Implements a dialog box with given values (or some default ones if chosen)."""
 
-    value_selected = False
-    pointer = 0
     default_options = {"y":["Yes", True], 'n':["No", False], 'c':["Cancel", None]}
 
-    def __init__(self, values, i, o, message="Are you sure?", name="DialogBox"):
+    def __init__(self, values, input_device, output_device,
+                 message="Are you sure?", name="DialogBox"):
         """Initialises the DialogBox object.
 
         Args:
@@ -21,10 +20,10 @@ class DialogBox():
 
             * You can also pass a string "yn" to get "Yes(True), No(False)" options,
                 or "ync" to get "Yes(True), No(False), Cancel(None)" options.
-            * Values put together with spaces between them shouldn't
-                be longer than the screen's width.
+            * Values put together with spaces between them can't
+                be longer than the screen's width or an exception is raised
 
-            * ``i``, ``o``: input&output device objects
+            * ``input_device``, ``output_device``: input&output device objects
 
         Kwargs:
 
@@ -33,22 +32,27 @@ class DialogBox():
             * ``name``: UI element name which can be used internally and for debugging.
 
         """
-        self.i = i
-        self.o = o
+        #attribute docstrings, should show up in Sphinx docs, verify this works as desired.
+        #:input device i.e. keyboard
+        self.input_device = input_device
+        #:output device i.e. screen
+        self.output_device = output_device
+        #:True if dialog is in foreground, False otherwise
         self.in_foreground = False
+        #:caret column
         self.pointer = 0
-
+        self.value_selected = False
         self.name = name
         if isinstance(values, str):
             self.values = []
             for char in values:
                 self.values.append(self.default_options[char])
-            #value_str = " ".join([value[0] for value in values])
-            #assert(len(value_str) <= o.cols, "Resulting string too long for the display!")
-        else:
-            assert type(values) in (list, tuple), "Unsupported 'values' argument!"
+        elif isinstance(values, (list, tuple)):
             assert values, "DialogBox: Empty/invalid 'values' argument!"
             self.values = values
+        else:
+            raise "Unsupported 'values' argument!"
+
         self.message = message
         self.process_values()
         self.generate_keymap()
@@ -61,14 +65,14 @@ class DialogBox():
 
     def activate(self):
         """causes dialog to be shown"""
-        logging.info("{0} activated".format(self.name))
-        self.o.cursor()
+        logging.info("% activated", self.name)
+        self.output_device.cursor()
         self.to_foreground()
         self.value_selected = False
         self.pointer = 0
         while self.in_foreground: #All the work is done in input callbacks
             sleep(0.1)
-        self.o.noCursor()
+        self.output_device.noCursor()
         logging.debug(self.name+" exited")
         if self.value_selected:
             return self.values[self.pointer][1]
@@ -78,23 +82,23 @@ class DialogBox():
     def deactivate(self):
         """hides dialog"""
         self.in_foreground = False
-        logging.info("{0} deactivated".format(self.name))    
+        logging.info("%s deactivated", self.name)
 
     def generate_keymap(self):
         """maps keys to actions"""
         self.keymap = {
-            "KEY_RIGHT":lambda: self.move_right(),
-            "KEY_LEFT":lambda: self.move_left(),
-            "KEY_KPENTER":lambda: self.accept_value(),
-            "KEY_ENTER":lambda: self.accept_value()
+            "KEY_RIGHT":    self.move_right(),
+            "KEY_LEFT":     self.move_left(),
+            "KEY_KPENTER":  self.accept_value(),
+            "KEY_ENTER":    self.accept_value()
         }
 
     def set_keymap(self):
         """assigns key map to input device"""
-        self.i.stop_listen()
-        self.i.clear_keymap()
-        self.i.keymap = self.keymap
-        self.i.listen()
+        self.input_device.stop_listen()
+        self.input_device.clear_keymap()
+        self.input_device.keymap = self.keymap
+        self.input_device.listen()
 
     def move_left(self):
         """moves caret one character left"""
@@ -112,7 +116,7 @@ class DialogBox():
         self.refresh()
 
     def accept_value(self):
-        """accepts input from input device"""
+        """returns value from input device and hides dialog"""
         self.value_selected = True
         self.deactivate()
 
@@ -120,11 +124,11 @@ class DialogBox():
         """creates text and metadata for dialog display on output device"""
         self.labels = [label for label, value in self.values]
         label_string = " ".join(self.labels)
-        if len(label_string) > self.o.cols:
+        if len(label_string) > self.output_device.cols:
             error_message = "DialogBox {}: all values combined are" \
             " longer than screen's width".format(self.name)
             raise ValueError(error_message)
-        self.right_offset = (self.o.cols - len(label_string))/2
+        self.right_offset = (self.output_device.cols - len(label_string))/2
         self.displayed_label = " "*self.right_offset+label_string
         #Need to go through the string to mark the first places
         #because we need to remember where to put the cursors
@@ -135,6 +139,6 @@ class DialogBox():
             current_position += len(label) + 1
 
     def refresh(self):
-        """refreshes text on output device"""
-        self.o.setCursor(1, self.positions[self.pointer])
-        self.o.display_data(self.message, self.displayed_label)
+        """sends text to output device"""
+        self.output_device.setCursor(1, self.positions[self.pointer])
+        self.output_device.display_data(self.message, self.displayed_label)
