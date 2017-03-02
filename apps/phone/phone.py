@@ -1,3 +1,4 @@
+"""sends and receives phone calls"""
 from threading import Event, Thread
 from Queue import Queue, Empty
 from serial import Serial
@@ -116,6 +117,9 @@ class Modem():
 
     def on_incoming_message(self, cmti_line):
         print("You've got mail! Line: {}".format(cmti_line[len("+CMTI:"):]).strip())
+
+    def on_held(self):
+        print("on held")
 
     clcc_mapping = [ #Outgoing
     {
