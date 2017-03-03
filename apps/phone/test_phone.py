@@ -1,4 +1,4 @@
-"""test for class DialogBox"""
+"""test for class Modem (in phone.py)"""
 
 import unittest
 import logging
@@ -14,6 +14,6 @@ class TestModem(unittest.TestCase):
     """tests Modem class in phone.py"""
     def test_constructor(self):
         """tests constructor"""
-        modem_instance = phone.Modem("/dev/ttyAMA0", timeout=0.2, monitor=False)
+        modem_instance = phone.Modem("/dev/ttyAMA0", timeout=0.2, monitor=True)
         self.assertIsNotNone(modem_instance)
 

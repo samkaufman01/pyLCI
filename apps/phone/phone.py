@@ -7,6 +7,12 @@ import logging
 import string
 import shlex
 
+#set up logging
+LOG_FORMAT = '%(asctime)-15s  %(message)s'
+logging.basicConfig(format=LOG_FORMAT)
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
 def has_nonascii(s):
     ascii_chars = string.ascii_letters+string.digits+"!@#$%^&*()_+\|{}[]-_=+'\",.<>?:; "
     return any([char for char in ascii_chars if char not in ascii_chars])
@@ -36,12 +42,14 @@ class Modem():
     clcc_header = "+CLCC:"
 
     def __init__(self, serial_path="/dev/ttyAMA0", timeout=0.2, monitor=True):
+        logger.debug("entering Modem constructor")
         self.serial_path = serial_path
         self.read_timeout = timeout
         self.executing_command = Event()
         self.should_monitor = Event()
         self.unexpected_queue = Queue()
         if monitor: self.start_monitoring()
+        logger.debug("exiting Modem constructor")
 
     def init_modem(self):
         self.port = Serial(self.serial_path, 115200, timeout=self.read_timeout)
@@ -261,10 +269,13 @@ class Modem():
         print("Stopped monitoring!")
 
     def start_monitoring(self):
+        logger.debug("entering start_monitoring")
         self.should_monitor.set()
         self.thread = Thread(target=self.monitor)
         self.thread.daemon=True
+        logger.debug("about to start thread")
         self.thread.start()
+        logger.debug("thread started")
 
     def stop_monitoring(self):
         self.should_monitor.clear()
