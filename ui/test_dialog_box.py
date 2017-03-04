@@ -2,8 +2,9 @@
 
 import unittest
 import logging
-import dialog
 import os
+import dialog
+
 
 #set up logging
 LOG_FORMAT = '%(asctime)-15s  %(message)s'
