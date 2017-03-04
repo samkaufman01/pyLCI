@@ -3,7 +3,7 @@
 import unittest
 import logging
 import dialog
-
+import os
 
 #set up logging
 LOG_FORMAT = '%(asctime)-15s  %(message)s'
@@ -28,6 +28,8 @@ class TestDialogBox(unittest.TestCase):
     """tests dialog box class"""
     def test_constructor(self):
         """tests constructor"""
+        logger.debug("entering DialogBox test_constructor")
+        logger.debug("os.getcwd()=%s", os.getcwd())
         default_options = "ync"
         output_device = DummyOutputDevice()
         dialog_box = dialog.DialogBox(default_options, None, output_device)

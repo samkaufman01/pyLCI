@@ -42,7 +42,9 @@ class Modem():
     clcc_header = "+CLCC:"
 
     def __init__(self, serial_path="/dev/ttyAMA0", timeout=0.2, monitor=True):
-        logger.debug("entering Modem constructor")
+        logger.debug(
+            "entering class constructor, __class__ is %s, __package__ is %s, __name__ is %s",
+            self.__class__, __package__, __name__)
         self.serial_path = serial_path
         self.read_timeout = timeout
         self.executing_command = Event()
