@@ -8,7 +8,7 @@ import string
 import shlex
 
 #set up logging
-LOG_FORMAT = '%(asctime)-15s  %(message)s'
+LOG_FORMAT = '%(asctime)-15s %(thread)d %(message)s'
 logging.basicConfig(format=LOG_FORMAT)
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -249,13 +249,14 @@ class Modem():
         logging.debug("Unexpected lines: {}".format(data))
         
     def monitor(self):
+        logger.debug("entering monitor")
         while self.should_monitor.isSet():
-            #print("Monitoring...")
+            logger.debug("Monitoring...")
             if not self.executing_command.isSet():
                 #First, the serial port
                 data = self.port.read(self.read_buffer_size)
                 if data: 
-                    print("Got data through serial!")
+                    logger.debug("Got data through serial!")
                     self.process_incoming_data(data)
                 #Then, the queue of unexpected messages received from other commands
                 try:
@@ -263,12 +264,12 @@ class Modem():
                 except Empty:
                     pass
                 else:
-                    print("Got data from queue!")
+                    logger.debug("Got data from queue!")
                     self.process_incoming_data(data)
-            #print("Got to sleep")
+            logger.debug("about to sleep")
             sleep(self.read_timeout)
-            #print("Returned from sleep")
-        print("Stopped monitoring!")
+            logger.debug("back from sleep")
+        print("exiting monitor")
 
     def start_monitoring(self):
         logger.debug("entering start_monitoring")
