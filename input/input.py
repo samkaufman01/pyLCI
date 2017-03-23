@@ -3,7 +3,10 @@ import importlib
 import atexit
 from time import sleep
 import Queue
+import logging
 from helpers import read_config
+
+logger = logging.getLogger(__name__)
 
 listener = None
 
@@ -195,6 +198,7 @@ def init():
     for input_config in input_configs:
         driver_name = input_config["driver"]
         driver_module = importlib.import_module("input.drivers."+driver_name)
+        logger.debug("driver_name : {0}, driver_module = {1}".format(driver_name, driver_module))
         args = input_config["args"] if "args" in input_config else []
         kwargs = input_config["kwargs"] if "kwargs" in input_config else {}
         driver = driver_module.InputDevice(*args, **kwargs)

@@ -3,7 +3,7 @@ menu_name = "Skeleton app" #App name as seen in main menu while using the system
 from subprocess import call
 from time import sleep
 
-from ui import Menu, Printer
+from pyLCI.ui import Menu, Printer
 
 def call_internal():
     Printer(["Calling internal", "command"], i, o, 1)

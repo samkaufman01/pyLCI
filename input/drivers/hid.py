@@ -1,7 +1,9 @@
 from evdev import InputDevice as HID, list_devices, ecodes
 from time import sleep
-
+import logging
 from skeleton import InputSkeleton
+
+logger = logging.getLogger(__name__)
 
 def get_input_devices():
     """Returns list of all the available InputDevices"""
@@ -46,6 +48,8 @@ class InputDevice(InputSkeleton):
             raise IOError("Device not found")
         self.path = path
         self.name = name
+
+        logger.debug("name = {0}, path = {1}".format(name,path))
         InputSkeleton.__init__(self, mapping = [], **kwargs)
 
     def init_hw(self):

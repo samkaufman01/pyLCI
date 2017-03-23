@@ -9,6 +9,13 @@ import argparse
 #And we output things for debugging, so o goes first.
 from output import output
 
+import logging
+#set up logging
+LOG_FORMAT = '%(asctime)-15s  %(message)s'
+logging.basicConfig(format=LOG_FORMAT)
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
 #Debugging helper
 import threading
 import traceback
@@ -36,7 +43,8 @@ try: #If there's an internal error, we show it on display and exit
     from input import input
     input.init()
     i = input.listener
-except:
+except Exception as ex:
+    logger.error("input.init() error: {0}".format(ex))
     Printer(["Oops. :(", "y u make mistake"], None, o, 0) #Yeah, that's about all the debug data. 
     raise
 
@@ -73,7 +81,8 @@ def launch(name=None):
         name = name.rstrip('/') #If using autocompletion from main folder, it might append a / at the name end, which isn't acceptable for load_app
         try:
             app = app_man.load_app(name)
-        except:
+        except Exception as ex:
+            logger.error("app_man.load_app(name) error: {0}".format(ex))
             i.atexit()
             raise
         exception_wrapper(app.callback)
