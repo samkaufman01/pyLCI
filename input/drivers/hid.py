@@ -42,6 +42,7 @@ class InputDevice(InputSkeleton):
             raise TypeError("Expected at least path or name; got nothing. =(")
         if not path:
             path = get_path_by_name(name)
+            logger.debug("get_path_by_name returned {0} for name {1}".format(path,name))
         if not name:
             name = get_name_by_path(path)
         if not name and not path: #Seems like nothing was found by get_input_devices
@@ -50,19 +51,26 @@ class InputDevice(InputSkeleton):
         self.name = name
 
         logger.debug("name = {0}, path = {1}".format(name,path))
+        self.init_hw()
         InputSkeleton.__init__(self, mapping = [], **kwargs)
 
     def init_hw(self):
+        logger.debug("entered init_hw")
         try:
+            logger.debug("attempting to set self.device to self.path={0}".format(self.path))
             self.device = HID(self.path)
-        except OSError:
+        except OSError as osex:
+            logger.error("error attempting to set self.device = {0}".format(osex))
             return False
         else:
+            logger.debug("grabbing device")
             self.device.grab() #Can throw exception if already grabbed
+            logger.debug("device grabbed")
             return True
 
     def runner(self):
         """Blocking event loop which just calls supplied callbacks in the keymap."""
+        logger.debug("entering runner")
         try:
             while not self.stop_flag:
                 event = self.device.read_one()
@@ -73,15 +81,20 @@ class InputDevice(InputSkeleton):
                         self.send_key(key)
                 sleep(0.01)
         except IOError as e: 
+            logger.error("runner IOError = {0}".format(e))
             if e.errno == 11:
                 #raise #Uncomment only if you have nothing better to do - error seems to appear at random
                 pass
 
     def atexit(self):
+        logger.debug("entered InputDevice.atexit")
         InputSkeleton.atexit(self)
+        logger.debug("back from InputSkeleton.atexit")
         try:
+            logger.debug("attempting to ungrab hid device")
             self.device.ungrab()
-        except:
+        except Exception as ex:
+            logger.error("ungrab failed with ex = {0}".format(ex))
             pass
 
 

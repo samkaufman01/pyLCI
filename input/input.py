@@ -27,16 +27,19 @@ class InputListener():
 
     def __init__(self, drivers, keymap=None):
         """Init function for creating KeyListener object. Checks all the arguments and sets keymap if supplied."""
+        logger.debug("entered InputListener constructor, drivers count = {0}, keymap = {1}".format(len(drivers),keymap))
         self.drivers = drivers
         self.queue = Queue.Queue()
         if keymap is None: keymap = {} 
         for driver, _ in self.drivers:
             driver.send_key = self.receive_key #Overriding the send_key method so that keycodes get sent to InputListener
         self.set_keymap(keymap)
+        logger.debug("set_keymap completed")
 
     def receive_key(self, key):
         """ This is the method that receives keypresses from drivers and puts them into ``self.queue`` for ``self.event_loop`` to receive """
         try:
+            logger.debug("receive_key got key {0}".format(key))
             self.queue.put(key)
         except:
             raise #Just collecting possible exceptions for now
@@ -108,6 +111,7 @@ class InputListener():
 
     def event_loop(self, index):
         """Blocking event loop which just calls callbacks in the keymap once corresponding keys are received in the ``self.queue``."""
+        logger.debug("entered event_loop")
         #print("Starting event loop "+str(index))
         self.stop_flag = Event()
         stop_flag = self.stop_flag #Saving a reference. 
@@ -118,15 +122,20 @@ class InputListener():
         while not stop_flag.isSet():
             try:
                 key = self.queue.get(False, 0.1)
+                logger.debug("got key = {0}".format(key))
             except Queue.Empty:
+                #logger.debug("got Queue.Empty, sleeping")
                 sleep(0.1)
-            except AttributeError:
+            except AttributeError as attributeError:
+                logger.error("got AttributeError = {0}".format(attributeError))
                 pass #Typically gets printed if InputListener exits abnormally upon program termination
             else:
+                logger.debug("about to enter process_key with key = {0}".format(key))
                 self.process_key(key)
         #print("Stopping event loop "+str(index))
 
     def process_key(self, key):
+        logger.debug("entered process_key with key = {0}".format(key))
         if key in self.nonmaskable_keymap:
             callback = self.nonmaskable_keymap[key]
             self.handle_callback(callback, key)
@@ -140,6 +149,7 @@ class InputListener():
             self.handle_callback(self.streaming, key, pass_key=True)
         
     def handle_callback(self, callback, key, pass_key=False):
+        logger.debug("entered handle_callback")
         try:
             if pass_key:
                 callback(key)
@@ -158,6 +168,7 @@ class InputListener():
 
     def listen(self):
         """Start event_loop in a thread. Nonblocking."""
+        logger.debug("entered listen")
         for driver, _ in self.drivers:
             driver.start()
         self.listener_thread = Thread(target = self.event_loop, name="InputThread-"+str(self.thread_index), args=(self.thread_index, )) 
@@ -168,6 +179,7 @@ class InputListener():
 
     def stop_listen(self):
         """This sets a flag for ``event_loop`` to stop. It also calls a ``stop`` method of the input driver ``InputListener`` is using."""
+        logger.debug("entered stop_listen")
         if self.stop_flag is not None:
             self.stop_flag.set()
         for driver, _ in self.drivers:
@@ -176,6 +188,7 @@ class InputListener():
 
     def atexit(self):
         """Exits driver (if necessary) if something wrong happened or pyLCI exits. Also, stops the listener"""
+        logger.debug("entered atexit")
         self.stop_listen()
         for driver, _ in self.drivers:
             if hasattr(driver, "atexit"):
@@ -191,6 +204,7 @@ def init():
     """ This function is called by main.py to read the input configuration, pick the corresponding drivers and initialize InputListener.
  
     It also sets ``listener`` globals of ``input`` module with driver and listener respectively, as well as registers ``listener.stop()`` function to be called when script exits since it's in a blocking non-daemon thread."""
+    logger.debug("entered init")
     global listener
     config = read_config("config.json")
     input_configs = config["input"]
@@ -205,3 +219,4 @@ def init():
         drivers.append([driver, driver_name])
     listener = InputListener(drivers)
     atexit.register(listener.atexit)
+    logger.debug("exited init")

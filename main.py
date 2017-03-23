@@ -49,10 +49,12 @@ except Exception as ex:
     raise
 
 def splash_screen():
+    logger.debug("entering splash_screen")
     try:
         from splash import splash
         splash(i, o)
-    except ImportError:
+    except ImportError as importError:
+        logger.error("splash_screen error = {0}".format(importError))
         pass
 
 def exception_wrapper(callback):

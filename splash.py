@@ -2,8 +2,11 @@ import PIL
 from PIL.ImageOps import invert
 from oled.render import canvas
 from time import sleep
+import logging
+logger = logging.getLogger(__name__)
 
 def splash(i, o):
+    logger.debug("entering splash")
     image = PIL.Image.open("splash.png").convert('L')
     image = invert(image)
     image = image.convert(o.device.mode)

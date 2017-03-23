@@ -1,18 +1,15 @@
 #!/usr/bin/python
 
-#draw.rectangle((0, 0, device.width-1, device.height-2), outline="white", fill="black")
+#chopped up from sh1106.py in an attempt to get the pygame emulator going
 
-# based on code from Adafruit, lrvick and LiquidCrystal
-# lrvick - https://github.com/lrvick/raspi-hd44780/blob/master/hd44780.py
-# LiquidCrystal - https://github.com/arduino/Arduino/blob/master/libraries/LiquidCrystal/LiquidCrystal.cpp
-# Adafruit - https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code
-# SSD1306 library - ################
-
-from time import sleep
 from time import sleep
 from threading import Event
+import logging
 from backlight import *
 import demo_arg_parser
+from luma.core.render import canvas
+
+logger = logging.getLogger(__name__)
 
 def delayMicroseconds(microseconds):
     seconds = microseconds / float(1000000)  # divide microseconds by 1 million for seconds
@@ -34,7 +31,7 @@ class Screen(BacklightManager):
     cursor_enabled = False
     cursor_pos = (0, 0) #x, y
 
-    def __init__(self, debug = False, buffering = True, **kwargs):
+    def __init__(self, debug = True, buffering = True, **kwargs):
         """ Sets variables for high-level functions.
         
         Kwargs:
@@ -43,6 +40,7 @@ class Screen(BacklightManager):
            * ``height`` (default=16): columns of the connected display
            * ``debug`` (default=False): debug mode which prints out the commands sent to display
            * ``**kwargs``: all the other arguments, get passed further to HD44780.init_display() function"""
+        logger.debug("entering Screen constructor, kwargs = {0}".format(kwargs))
         self.serial = None
         self.busy_flag = Event()
         self.charwidth = 6
@@ -64,14 +62,17 @@ class Screen(BacklightManager):
         self.device.hide()
 
     def init_display(self, autoscroll=False, **kwargs):
-        """Initializes HD44780 controller. """
+        """Initializes pygame emulator. """
+        logger.debug("entered pygame_emulator.init_display")
         self.device = demo_arg_parser.get_device()
+        logger.debug("set device")
 
     @activate_backlight_wrapper
     def display_data(self, *args):
         """Displays data on display. This function does the actual work of printing things to display.
         
         ``*args`` is a list of strings, where each string corresponds to a row of the display, starting with 0."""
+        logger.debug("entered display_data with args = {0}".format(args))
         while self.busy_flag.isSet():
             sleep(0.01)
         self.busy_flag.set()

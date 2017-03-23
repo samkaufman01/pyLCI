@@ -1,5 +1,7 @@
 import importlib
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 class ListWithMetadata(list):
     ordering_alias = None
@@ -20,6 +22,7 @@ class AppManager():
      """
 
     def __init__(self, app_directory, menu_class, printer_func, i, o):
+        logger.debug("AppManager constructor, app_directory = {0}, menu_class= {1}, printer_func={2}, i={3}, o={4}".format(app_directory, menu_class, printer_func, i, o))
         self.app_directory = app_directory
         self.menu_class = menu_class
         self.printer_func = printer_func
@@ -27,11 +30,12 @@ class AppManager():
         self.o = o
 
     def load_all_apps(self):
+        logger.debug("entered load_all_apps")
         base_menu = self.menu_class([], self.i, self.o, "Main app menu", exitable=False) #Main menu for all applications.
         orderings = {}
         self.subdir_menus[self.app_directory] = base_menu
         for path, subdirs, modules in app_walk(self.app_directory): 
-            #print("Loading path {} with modules {} and subdirs {}".format(path, modules, subdirs))
+            logger.debug("Loading path {} with modules {} and subdirs {}".format(path, modules, subdirs))
             for subdir in subdirs:
                 #First, we create subdir menus (not yet linking because they're not created in correct order) and put them in subdir_menus.
                 subdir_path = os.path.join(path, subdir)
@@ -41,11 +45,11 @@ class AppManager():
                 try:
                     module_path = os.path.join(path, module)
                     app = self.load_app(module_path)
-                    print("Loaded app {}".format(module_path))
+                    logger.debug("Loaded app {}".format(module_path))
                     self.app_list[module_path] = app
                 except Exception as e:
-                    print("Failed to load app {}".format(module_path))
-                    print(e)
+                    logger.error("Failed to load app {}".format(module_path))
+                    logger.error(e)
                     self.printer_func(["Failed to load", os.path.split(module_path)[1]], self.i, self.o, 2)
         for subdir_path in self.subdir_menus:
             #Now it's time to link menus to parent menus
@@ -53,7 +57,7 @@ class AppManager():
                 continue
             parent_path = os.path.split(subdir_path)[0]
             ordering = self.get_ordering(parent_path)
-            #print("Adding subdir {} to parent {}".format(subdir_path, parent_path))
+            logger.debug("Adding subdir {} to parent {}".format(subdir_path, parent_path))
             parent_menu = self.subdir_menus[parent_path]
             subdir_menu = self.subdir_menus[subdir_path]
             subdir_menu_name = self.get_subdir_menu_name(subdir_path)
@@ -65,12 +69,12 @@ class AppManager():
             app = self.app_list[app_path]
             subdir_path = os.path.split(app_path)[0]
             ordering = self.get_ordering(subdir_path)
-            #print("Adding app {} to subdir {}".format(app_path, subdir_path))
+            logger.debug("Adding app {} to subdir {}".format(app_path, subdir_path))
             subdir_menu = self.subdir_menus[subdir_path]
             subdir_menu_contents = self.insert_by_ordering([app.menu_name, app.callback], os.path.split(app_path)[1], subdir_menu.contents, ordering)
             subdir_menu.set_contents(subdir_menu_contents)
-        #print(app_list)
-        #print(subdir_menus)
+        #logger.debug("app_list = {0}".format(app_list))
+        #logger.debug("subdir_menus = {0}".format(subdir_menus))
         return base_menu
 
     def load_app(self, app_path):
