@@ -36,6 +36,6 @@ class RPCApi():
 
     def start_thread(self):
         """Starts self.run() in a separate thread"""
-        self.thread = threading.Thread(target=self.run)
+        self.thread = threading.Thread(target=self.run, name="Thread-{0}".format(__name__))
         self.thread.daemon = True
         self.thread.start()

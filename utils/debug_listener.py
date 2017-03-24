@@ -12,7 +12,7 @@ devices = [InputDevice(fn) for fn in list_devices()]
 print devices
 for dev in devices:
     print dev.name+" - "+dev.fn
-    thread = threading.Thread(target=listen_for_events, args=(dev,))
+    thread = threading.Thread(target=listen_for_events, args=(dev,), name="Thread-{0}".format(__name__))
     thread.daemon = True
     thread.start()
 

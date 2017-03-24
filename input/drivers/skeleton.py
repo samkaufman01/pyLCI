@@ -39,7 +39,7 @@ class InputSkeleton():
     def start_thread(self):
         """Starts a thread with ``start`` function as target."""
         logger.debug("entered start_thread")
-        self.thread = threading.Thread(target=self.runner)
+        self.thread = threading.Thread(target=self.runner, name="Thread-{0}".format(__name__))
         self.thread.daemon = False
         self.thread.start()
         logger.debug("thread started")

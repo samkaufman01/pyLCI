@@ -93,6 +93,7 @@ class InputDevice(InputSkeleton):
         try:
             logger.debug("attempting to ungrab hid device")
             self.device.ungrab()
+            logger.debug("ungrab successful")
         except Exception as ex:
             logger.error("ungrab failed with ex = {0}".format(ex))
             pass

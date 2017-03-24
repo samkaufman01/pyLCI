@@ -57,7 +57,7 @@ class InputDevice():
 
     def activate(self):
         """Starts a thread with ``start`` function as target."""
-        self.thread = threading.Thread(target=self.start)
+        self.thread = threading.Thread(target=self.start, name="Thread-{0}".format(__name__))
         self.thread.daemon = False
         self.thread.start()
 

@@ -31,7 +31,7 @@ class AppManager():
 
     def load_all_apps(self):
         logger.debug("entered load_all_apps")
-        base_menu = self.menu_class([], self.i, self.o, "Main app menu", exitable=False) #Main menu for all applications.
+        base_menu = self.menu_class([], self.i, self.o, "Main app menu", exitable=True) #Main menu for all applications.
         orderings = {}
         self.subdir_menus[self.app_directory] = base_menu
         for path, subdirs, modules in app_walk(self.app_directory): 

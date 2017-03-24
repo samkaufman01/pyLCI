@@ -2,6 +2,7 @@ from time import sleep
 from copy import copy
 import logging
 from threading import Event
+logger = logging.getLogger(__name__)
 
 def to_be_foreground(func): #A safety check wrapper so that certain checks don't get called if menu is not the one active
     def wrapper(self, *args, **kwargs):
@@ -12,30 +13,60 @@ def to_be_foreground(func): #A safety check wrapper so that certain checks don't
     return wrapper
 
 class MenuExitException(Exception):
-    """An exception that you can throw from a menu callback to exit the menu that callback was called from"""
+    """An exception that you can throw from a menu callback
+    to exit the menu that callback was called from"""
     pass
 
 
 class Menu():
-    """Implements a menu which can be used to navigate through your application, output a list of values or select actions to perform. Is one of the most used elements, used both in system core and in most of the applications.
+    """Implements a menu which can be used to navigate through your application,
+    output a list of values or select actions to perform. Is one of the most used elements,
+    used both in system core and in most of the applications.
 
     Attributes:
 
-    * ``contents``: list of menu elements which was passed either to ``Menu`` constructor or to ``menu.set_contents()``.
-       
+    * ``contents``: list of menu elements which was passed either
+     to ``Menu`` constructor or to ``menu.set_contents()``.
+
       Menu element structure is a list, where:
-         * ``element[0]`` (element's representation) is either a string, which simply has the element's value as it'll be displayed, such as "Menu element 1", or, in case of entry_height > 1, can be a list of strings, each of which represents a corresponding display row occupied by the element.
-         * ``element[1]`` (element's callback) is a function which is called when menu's element is activated (such as pressing ENTER button when menu's element is selected). 
-           * Can be omitted if you don't need to have any actions taken upon activation of the element.
-           * Can be specified as 'exit' if you want a menu element that exits the menu upon activation.
+         * ``element[0]`` (element's representation) is either a string,
+            which simply has the element's value as it'll be displayed,
+            such as "Menu element 1", or, in case of entry_height > 1,
+            can be a list of strings, each of which represents a
+            corresponding display row occupied by the element.
+
+         * ``element[1]`` (element's callback) is a function
+            which is called when menu's element is activated
+            (such as pressing ENTER button when menu's element is selected).
+           * Can be omitted if you don't need to have
+            any actions taken upon activation of the element.
+           * Can be specified as 'exit'
+            if you want a menu element that exits the menu upon activation.
 
       *If you want to set contents after the initalisation, please, use set_contents() method.*
-    * ``_contents``: "Working copy" of menu contents, basically, a ``contents`` attribute which has been processed by ``self.process_contents``. 
+
+    * ``_contents``: "Working copy" of menu contents,
+        basically, a ``contents`` attribute
+        which has been processed by ``self.process_contents``.
+
     * ``pointer``: currently selected menu element's number in ``self._contents``.
-    * ``in_background``: a flag which indicates if menu is currently active, either if being displayed or being in background (for example, if a sub-menu of this menu is currently active)
-    * ``in_foreground`` : a flag which indicates if menu is currently displayed. If it's not active, inhibits any of menu's actions which can interfere with other menu or UI element being displayed.
-    * ``first_displayed_entry`` : Internal pointer which points to the number of ``self._contents`` element which is at the topmost position of the menu as it's currently displayed on the screen
-    * ``last_displayed_entry`` : Internal pointer which points to the number of ``self._contents`` element which is at the lowest position of the menu as it's currently displayed on the screen
+
+    * ``in_background``: a flag which indicates if menu is currently active,
+        either if being displayed or being in background
+        (for example, if a sub-menu of this menu is currently active)
+
+    * ``in_foreground`` : a flag which indicates if menu is currently displayed.
+        If it's not active, inhibits any of menu's actions
+        which can interfere with other menu or UI element being displayed.
+
+    * ``first_displayed_entry`` : Internal pointer which points to
+        the number of ``self._contents`` element
+        which is at the topmost position of the menu as it's currently displayed on the screen
+
+    * ``last_displayed_entry`` : Internal pointer which points to
+        the number of ``self._contents`` element
+        which is at the lowest position of the menu as it's currently displayed on the screen
+
     * ``no_entry_message`` : The entry displayed in case menu has no elements
 
     """
@@ -50,21 +81,34 @@ class Menu():
     exit_exception = False
     no_entry_message = "No menu entries"
 
-    def __init__(self, contents, i, o, name="Menu", entry_height=1, append_exit=True, catch_exit=True, exitable=True, contents_hook=None, scrolling=True):
+    def __init__(self, contents, i, o, name="Menu", entry_height=1,
+                 append_exit=True, catch_exit=True, exitable=True,
+                 contents_hook=None, scrolling=True):
         """Initialises the Menu object.
-        
+
         Args:
 
-            * ``contents``: a list of values, which can be constructed as described in the Menu object's docstring.
+            * ``contents``: a list of values, which can be constructed
+                 as described in the Menu object's docstring.
+
             * ``i``, ``o``: input&output device objects
 
         Kwargs:
 
             * ``name``: Menu name which can be used internally and for debugging.
+
             * ``entry_height``: number of display rows one menu element occupies.
-            * ``append_exit``: Appends an "Exit" alement to menu elements. Doesn't do it if any of elements has callback set as 'exit'.
-            * ``catch_exit``: If ``MenuExitException`` is received and catch_exit is False, it passes ``MenuExitException`` to the parent menu so that it exits, too. If catch_exit is True, MenuExitException is not passed along.
-            * ``exitable``: Decides if menu can exit at all by pressing ``KEY_LEFT``. Set by default and disables ``KEY_LEFT`` callback if unset. Is used for pyLCI main menu, not advised to be used in other settings.
+
+            * ``append_exit``: Appends an "Exit" alement to menu elements.
+                Doesn't do it if any of elements has callback set as 'exit'.
+
+            * ``catch_exit``: If ``MenuExitException`` is received and catch_exit is False,
+                it passes ``MenuExitException`` to the parent menu so that it exits, too.
+                If catch_exit is True, MenuExitException is not passed along.
+
+            * ``exitable``: Decides if menu can exit at all by pressing ``KEY_LEFT``.
+                Set by default and disables ``KEY_LEFT`` callback if unset.
+                Is used for pyLCI main menu, not advised to be used in other settings.
 
         """
         self.i = i
@@ -73,11 +117,11 @@ class Menu():
         self.name = name
         self.append_exit = append_exit
         self.contents_hook = contents_hook
-        self.scrolling={"enabled":scrolling,
-                        "current_finished":False,
-                        "current_scrollable":False,
-                        "counter":0,
-                        "pointer":0}
+        self.scrolling = {"enabled":scrolling,
+                          "current_finished":False,
+                          "current_scrollable":False,
+                          "counter":0,
+                          "pointer":0}
         self.set_contents(contents)
         self.catch_exit = catch_exit
         self.exitable = exitable

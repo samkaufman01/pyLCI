@@ -11,7 +11,7 @@ from output import output
 
 import logging
 #set up logging
-LOG_FORMAT = '%(asctime)-15s  %(message)s'
+LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT)
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -58,20 +58,28 @@ def splash_screen():
         pass
 
 def exception_wrapper(callback):
-    """This is a wrapper for all applications and menus. It catches exceptions and stops the system the right way when something bad happens, be that a Ctrl+c or an exception in one of the applications."""
+    """This is a wrapper for all applications and menus.
+    It catches exceptions and stops the system the right way
+    when something bad happens, be that a Ctrl+c
+    or an exception in one of the applications."""
+    logger.debug("entered exception_wrapper")
     try:
+        logger.debug("invoking callback()")
         callback()
     except KeyboardInterrupt:
+        logger.debug("caught KeyboardInterrupt")
         Printer(["Does Ctrl+C", "hurt scripts?"], None, o, 0)
         i.atexit()
         sys.exit(1)
     except Exception as e:
+        logger.debug("caught exception {0}".format(e))
         print(e)
         #raise
         Printer(["A wild exception", "appears!"], None, o, 0)
         i.atexit()
         sys.exit(1)
     else:
+        logger.debug("else block, exiting pyLCI")
         Printer("Exiting pyLCI", None, o, 0)
         i.atexit()
         sys.exit(0)
