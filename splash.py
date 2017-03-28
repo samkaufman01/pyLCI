@@ -1,6 +1,6 @@
 import PIL
 from PIL.ImageOps import invert
-from oled.render import canvas
+from luma.core.render import canvas
 from time import sleep
 import logging
 logger = logging.getLogger(__name__)

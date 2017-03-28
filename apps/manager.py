@@ -69,7 +69,7 @@ class AppManager():
             app = self.app_list[app_path]
             subdir_path = os.path.split(app_path)[0]
             ordering = self.get_ordering(subdir_path)
-            logger.debug("Adding app {} to subdir {}".format(app_path, subdir_path))
+            logger.debug("Adding app {0} to subdir {1} with callback {2}".format(app_path, subdir_path, app.callback))
             subdir_menu = self.subdir_menus[subdir_path]
             subdir_menu_contents = self.insert_by_ordering([app.menu_name, app.callback], os.path.split(app_path)[1], subdir_menu.contents, ordering)
             subdir_menu.set_contents(subdir_menu_contents)
@@ -78,7 +78,9 @@ class AppManager():
         return base_menu
 
     def load_app(self, app_path):
+        logger.debug("entered load_app with app_path = {0}".format(app_path))
         app_import_path = app_path.replace('/', '.')
+        logger.debug("app_import_path = {0}".format(app_import_path))
         app = importlib.import_module(app_import_path+'.main', package='apps')
         app.init_app(self.i, self.o)
         return app
