@@ -7,11 +7,7 @@ import logging
 import string
 import shlex
 
-#set up logging
-LOG_FORMAT = '%(asctime)-15s %(thread)d %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def has_nonascii(s):
     ascii_chars = string.ascii_letters+string.digits+"!@#$%^&*()_+\|{}[]-_=+'\",.<>?:; "
@@ -274,7 +270,7 @@ class Modem():
     def start_monitoring(self):
         logger.debug("entering start_monitoring")
         self.should_monitor.set()
-        self.thread = Thread(target=self.monitor)
+        self.thread = Thread(target=self.monitor, name="Thread-{0}".format(__name__))
         self.thread.daemon=True
         logger.debug("about to start thread")
         self.thread.start()

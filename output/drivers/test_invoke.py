@@ -4,9 +4,9 @@ import unittest
 from luma.emulator.device import device
 
 #set up logging
-LOG_FORMAT = '%(asctime)-15s  %(message)s'
+LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class TestPyGame(unittest.TestCase):
