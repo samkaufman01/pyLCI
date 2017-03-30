@@ -11,7 +11,7 @@ import dummyoutputdevice
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 class TestDialogBox(unittest.TestCase):
     """tests dialog box class"""

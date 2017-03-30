@@ -13,5 +13,5 @@ class TestManager(unittest.TestCase):
         """tests loading skelton app"""
         appmanager_instance = manager.AppManager("", None, None, None, None)
         self.assertIsNotNone(appmanager_instance)
-        app = appmanager_instance.load_app("apps/example_apps/skelton")
+        app = appmanager_instance.load_app("example_apps/skelton")
         self.assertIsNotNone(app)
