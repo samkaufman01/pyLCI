@@ -1,26 +1,18 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2014-17 Richard Hull and contributors
-# See LICENSE.rst for details.
-
 """
-Argument parser for examples.
+transition shim code, this is in the process of being refactored away
 """
 
-import sys
 import inspect
 import importlib
 import logging
 import argparse
 from collections import OrderedDict
 
-# logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)-15s - %(message)s'
-)
 # ignore PIL debug messages
 logging.getLogger("PIL").setLevel(logging.ERROR)
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def get_choices(module_name):
     try:
@@ -87,15 +79,18 @@ def create_parser(description='luma.examples arguments'):
 
 def get_device(actual_args=None):
     """
-    Create device from command-line arguments and return it.
+    hard wired to return pygame emulator device
     """
+    logger.debug("entered get_device")
     actual_args = []
     actual_args.append("-dpygame")
     parser = create_parser()
     args = parser.parse_args(actual_args)
 
     import luma.emulator.device
-    Device = getattr(luma.emulator.device, args.display)
+    Device = getattr(luma.emulator.device, 'pygame')
+
+    logger.debug("args: {0}".format(args))
     device = Device(**vars(args))
 
     return device
