@@ -40,6 +40,9 @@ used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)
 """
 def main():
+    logging.basicConfig(format=LOG_FORMAT)
+    #logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
     screen = pygame_emulator.Screen()
     screen.cursor()
     screen.setCursor(4, 5)

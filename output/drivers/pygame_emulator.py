@@ -9,6 +9,7 @@ import pygame_emulator_factory
 from luma.core.render import canvas
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class Screen():
     """
@@ -72,9 +73,15 @@ class Screen():
                         self.cursor_pos[1]-1,
                         self.cursor_pos[0]+self.charwidth+2,
                         self.cursor_pos[1]+self.charheight+1)
+                logger.debug("dims: {0}".format(dims))
                 draw.rectangle(dims, outline="white")
+            else:
+                logger.debug("cursor disabled")
+
             for line, arg in enumerate(args):
+                logger.debug("line = {0}, arg = {1}".format(line, arg))
                 y = (line*self.charheight - 1) if line != 0 else 0
+                logger.debug("y={0}".format(y))
                 draw.text((2, y), arg, fill="white")
         self.busy_flag.clear()
 
