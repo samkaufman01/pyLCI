@@ -1,5 +1,8 @@
 """
-transition shim code, this is in the process of being refactored away
+factory for pygame emulator device
+sets minimum attributes,
+creates device
+returns it to caller
 """
 import logging
 import luma.emulator.device
@@ -12,17 +15,17 @@ logger.setLevel(logging.DEBUG)
 
 def get_pygame_emulator_device():
     """
-    hard wired to return pygame emulator device
+    creates and returns pygame emulator device
     """
 
     #these are the bare minimum attributes needed to construct the emulator
     emulator_attributes = {}
     emulator_attributes['display'] = 'pygame'
+    emulator_attributes['width'] = 256
     emulator_attributes['height'] = 64
     emulator_attributes['rotate'] = 0
     emulator_attributes['scale'] = 2
     emulator_attributes['transform'] = 'scale2x'
-    emulator_attributes['width'] = 128
 
 
     Device = getattr(luma.emulator.device, 'pygame')
