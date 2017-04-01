@@ -6,7 +6,7 @@ from time import sleep
 from threading import Event
 import logging
 from backlight import *
-import demo_arg_parser
+import pygame_emulator_factory
 from luma.core.render import canvas
 
 logger = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class Screen(BacklightManager):
     def init_display(self, autoscroll=False, **kwargs):
         """Initializes pygame emulator. """
         logger.debug("entered pygame_emulator.init_display")
-        self.device = demo_arg_parser.get_device()
+        self.device = pygame_emulator_factory.get_pygame_emulator_device()
         logger.debug("set device")
 
     @activate_backlight_wrapper

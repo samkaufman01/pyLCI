@@ -2,7 +2,7 @@
 
 import logging
 import unittest
-import demo_arg_parser
+import pygame_emulator_factory
 
 
 
@@ -17,14 +17,14 @@ class TestPyGame(unittest.TestCase):
     def test_constructor(self):
         """tests constructor"""
         logger.debug("before invoke")
-        emulator = demo_arg_parser.get_device()
+        emulator = pygame_emulator_factory.get_pygame_emulator_device()
         self.assertIsNotNone(emulator)
         logger.debug("after unit test")
 
 
 def main():
     logger.debug("entering main")
-    emulator = demo_arg_parser.get_device()
+    emulator = pygame_emulator_factory.get_pygame_emulator_device()
 
 if __name__ == "__main__":
     main()

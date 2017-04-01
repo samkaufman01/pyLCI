@@ -14,7 +14,7 @@ import logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 #Debugging helper
 import threading
@@ -89,7 +89,7 @@ def launch(name=None):
     app_man = AppManager("apps", Menu, Printer, i, o)
     if name != None:
         
-        name = "apps/" + name.rstrip('/') #If using autocompletion from main folder, it might append a / at the name end, which isn't acceptable for load_app
+        name = name.rstrip('/') #If using autocompletion from main folder, it might append a / at the name end, which isn't acceptable for load_app
         try:
             app = app_man.load_app(name)
         except Exception as ex:
