@@ -23,3 +23,15 @@ class TestDialogBox(unittest.TestCase):
         output_device = dummyoutputdevice.DummyOutputDevice()
         dialog_box = dialog.DialogBox(default_options, None, output_device)
         self.assertIsNotNone(dialog_box)
+
+    def test_keymap(self):
+        """tests keymap"""
+        logger.debug("entering DialogBox test_constructor")
+        logger.debug("os.getcwd()=%s", os.getcwd())
+        default_options = "ync"
+        output_device = dummyoutputdevice.DummyOutputDevice()
+        dialog_box = dialog.DialogBox(default_options, None, output_device)
+        self.assertIsNotNone(dialog_box.keymap)
+        for callback in [dialog_box.keymap[key] for key in dialog_box.keymap.keys()]:
+            self.assertIsNotNone(callback)
+        
