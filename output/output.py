@@ -4,7 +4,10 @@ import importlib
 screen = None
 
 def init():
-    """ This function is called by main.py to read the output configuration, pick the corresponding drivers and initialize a Screen object.
+    """ This function is called by main.py to
+        read the output configuration,
+        pick the corresponding drivers
+        and initialize a Screen object.
 
     It also sets ``screen`` global of ``output`` module with created ``Screen`` object."""
     global screen
