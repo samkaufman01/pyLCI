@@ -13,7 +13,7 @@ logging.getLogger("PIL").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-def get_pygame_emulator_device():
+def get_pygame_emulator_device(width=256, height=128):
     """
     creates and returns pygame emulator device
     """
@@ -21,12 +21,9 @@ def get_pygame_emulator_device():
     #these are the bare minimum attributes needed to construct the emulator
     emulator_attributes = {}
     emulator_attributes['display'] = 'pygame'
-    emulator_attributes['width'] = 256
-    emulator_attributes['height'] = 64
-    emulator_attributes['rotate'] = 0
-    emulator_attributes['scale'] = 2
-    emulator_attributes['transform'] = 'scale2x'
-
+    #width and height are in pixels
+    emulator_attributes['width'] = width
+    emulator_attributes['height'] = height
 
     Device = getattr(luma.emulator.device, 'pygame')
 

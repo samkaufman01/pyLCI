@@ -1,5 +1,5 @@
 """pygame emulator for lcd screen
-allows development of sofware on a without hardware
+allows development of sofware on a without zerophone hardware
 e.g. on a laptop with a USB keyboard"""
 
 from time import sleep
@@ -13,9 +13,9 @@ logger.setLevel(logging.DEBUG)
 
 class Screen():
     """
-    Screen is an important class; on program start
-    main.py invokes output.py which looks up an output driver and
-    then creates a Screen instance from that driver.
+    Screen is an important class; all display is done by this class.
+    On program start main.py invokes output.py which looks up an output driver and
+    the output driver creates a Screen instance.
 
     Screen provides high-level functions for interaction with display.
     It contains all the high-level logic and
@@ -39,16 +39,16 @@ class Screen():
            * ``**kwargs``: all the other arguments
                  get passed to the init_display() function (currently ignored)"""
 
-        logger.debug("entering Screen constructor, kwargs = {0}".format(kwargs))
+        logger.debug("entering Screen constructor, kwargs = %s", kwargs)
         self.busy_flag = Event()
+        #TODO: this needs to be adjusted based on emulator window size
         self.charwidth = 6
         self.charheight = 8
         self.cols = 110/self.charwidth
         self.rows = 64/self.charheight
         self.debug = debug
         self.init_display(**kwargs)
- 
-  
+
     def init_display(self):
         """Creates instance of pygame emulator device and stores it in a member variable. """
         logger.debug("entered pygame_emulator.init_display")
@@ -62,7 +62,7 @@ class Screen():
         ``*args`` is a list of strings,
                   where each string corresponds to a row of the display,
                   starting with 0."""
-        logger.debug("entered display_data with args = {0}".format(args))
+        logger.debug("entered display_data with args = %s", args)
         while self.busy_flag.isSet():
             sleep(0.01)
         self.busy_flag.set()
@@ -73,7 +73,7 @@ class Screen():
                         self.cursor_pos[1]-1,
                         self.cursor_pos[0]+self.charwidth+2,
                         self.cursor_pos[1]+self.charheight+1)
-                logger.debug("dims: {0}".format(dims))
+                logger.debug("dims: %s", dims)
                 draw.rectangle(dims, outline="white")
             else:
                 logger.debug("cursor disabled")
@@ -83,6 +83,7 @@ class Screen():
                 y = (line*self.charheight - 1) if line != 0 else 0
                 logger.debug("y={0}".format(y))
                 draw.text((2, y), arg, fill="white")
+
         self.busy_flag.clear()
 
     def setCursor(self, row, col):

@@ -19,6 +19,12 @@ class TestPyGameEmulator(unittest.TestCase):
         self.assertIsNotNone(emulator_device)
         logger.debug("after unit test")
 
+    def test_factory_set_size(self):
+        """tests setting custom size for emulator device window"""
+        emulator_device = pygame_emulator_factory.get_pygame_emulator_device(512, 256)
+        self.assertIsNotNone(emulator_device)
+        logger.debug("after unit test")
+
 """
 used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)

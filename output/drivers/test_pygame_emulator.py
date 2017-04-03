@@ -1,7 +1,7 @@
 """tests pygame emulator
-    a little crude at the moment as the expected result
+    Crude at the moment as the expected result
     must be visually observed.
-    I will fix this.
+    TODO: fix this.
 """
 
 import logging
@@ -35,6 +35,23 @@ class TestPyGameEmulator(unittest.TestCase):
         screen.setCursor(4, 5)
         screen.display_data("row 4, column 5")
 
+    def test_display_text_list(self):
+        """ tests displaying 2 lines of text passed in as a list.
+            Expected result:  2 lines of text displayed on screen
+            Actual result: exception thrown out of PIL/ImageDraw.py
+        """
+        screen = pygame_emulator.Screen()
+        screen_data = ['row 1', 'row 2']
+        screen.display_data(screen_data)
+
+    def test_display_multiline_text(self):
+        """tests displaying 3 lines of text separated by line feeds
+           Expected result:  3 lines of text are shown on screen.
+           Actual result:  3 lines of text are shown on screen."""
+        screen = pygame_emulator.Screen()
+        screen_data = '\n'.join(['row 1', 'row 2', 'row 3'])
+        screen.display_data(screen_data)
+
 """
 used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)
@@ -44,9 +61,8 @@ def main():
     #logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     screen = pygame_emulator.Screen()
-    screen.cursor()
-    screen.setCursor(4, 5)
-    screen.display_data("row 4, column 5")
+    screen_data = '\n'.join(['row 1', 'row 2', 'row 3'])
+    screen.display_data(screen_data)
 
 if __name__ == "__main__":
     main()
