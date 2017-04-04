@@ -13,7 +13,7 @@ logging.getLogger("PIL").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-def get_pygame_emulator_device(width=256, height=128):
+def get_pygame_emulator_device(width=128, height=64):
     """
     creates and returns pygame emulator device
     """
