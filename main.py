@@ -84,7 +84,7 @@ def exception_wrapper(callback):
         i.atexit()
         sys.exit(0)
 
-def launch(name=None):
+def launch(name=None, debug=False):
     """Function that launches pyLCI, either in full mode or single-app mode (if ``name`` kwarg is passed)."""
     app_man = AppManager("apps", Menu, Printer, i, o)
     if name != None:
@@ -100,10 +100,13 @@ def launch(name=None):
     else:
         splash_screen()
         app_menu = app_man.load_all_apps()
+        if debug:
+            app_menu.exitable = True
         exception_wrapper(app_menu.activate)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="pyLCI runner")
     parser.add_argument('-a', '--app', action="store", help="Launch pyLCI with a single app loaded (useful for testing)", default=None)
+    parser.add_argument('-d', '--debug', action="store_true", help="Launch pyLCI with debug parameters", default=False)
     args = parser.parse_args()
-    launch(name=args.app)
+    launch(name=args.app, debug=args.debug)

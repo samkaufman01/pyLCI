@@ -87,10 +87,10 @@ class DialogBox():
     def generate_keymap(self):
         """maps keys to actions"""
         self.keymap = {
-            "KEY_RIGHT":    self.move_right(),
-            "KEY_LEFT":     self.move_left(),
-            "KEY_KPENTER":  self.accept_value(),
-            "KEY_ENTER":    self.accept_value()
+            "KEY_RIGHT":    self.move_right,
+            "KEY_LEFT":     self.move_left,
+            "KEY_KPENTER":  self.accept_value,
+            "KEY_ENTER":    self.accept_value
         }
 
     def set_keymap(self):
