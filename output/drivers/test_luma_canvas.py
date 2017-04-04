@@ -11,7 +11,9 @@ logging.basicConfig(format=LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-#pygame_emulator_factory sets width to 256 pixels and height to 128 pixels
+#pygame_emulator_factory sets width to 128 pixels and height to 64 pixels
+#set it to a different value here to make sure there are no hard coded
+#assumptions buried in the zerophone code.
 EMULATOR_WINDOW_WIDTH = 256
 EMULATOR_WINDOW_HEIGHT = 128
 
@@ -19,8 +21,8 @@ class TestLumaCanvas(unittest.TestCase):
     """unit test class to verify luma emulator canvas object functionality"""
     def test_canvas_draw_rectangle(self):
         """verifies capabilities of pygame emulator draw rectangle method"""
-        #pygame_emulator_factory sets width to 256 pixels and height to 128 pixels
-        device = pygame_emulator_factory.get_pygame_emulator_device()
+        device = pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
+                                                                    EMULATOR_WINDOW_HEIGHT)
 
         with canvas(device) as draw:
             #box_boundary is in pixels, upper left, lower right
@@ -33,7 +35,9 @@ class TestLumaCanvas(unittest.TestCase):
             Expected Result: 2 lines of text drawn in different places.
             Actual Result:  2 lines of text drawn in different places
             """
-        device = pygame_emulator_factory.get_pygame_emulator_device()
+        device = pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
+                                                                    EMULATOR_WINDOW_HEIGHT)
+
         with canvas(device) as draw:
             #x,y are in pixels
             text_start_x_y = (64, 64)
@@ -48,7 +52,9 @@ class TestLumaCanvas(unittest.TestCase):
            Expected result:  2 lines of text with a rectangle bounding the entire emulator window.
            Actual result: 2 lines of text with a rectangle bounding the entire emulator window.
         """
-        device = pygame_emulator_factory.get_pygame_emulator_device()
+        device = pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
+                                                                    EMULATOR_WINDOW_HEIGHT)
+
         with canvas(device) as draw:
             #x,y are in pixels
             text_start_x_y = (64, 64)
@@ -65,7 +71,9 @@ class TestLumaCanvas(unittest.TestCase):
 used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)"""
 def main():
-    device = pygame_emulator_factory.get_pygame_emulator_device()
+    device = pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
+                                                                EMULATOR_WINDOW_HEIGHT)
+
     with canvas(device) as draw:
         #x,y are in pixels
         text_start_x_y = (64, 64)

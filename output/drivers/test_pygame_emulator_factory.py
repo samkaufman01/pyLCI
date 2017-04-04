@@ -21,7 +21,7 @@ class TestPyGameEmulator(unittest.TestCase):
 
     def test_factory_set_size(self):
         """tests setting custom size for emulator device window"""
-        emulator_device = pygame_emulator_factory.get_pygame_emulator_device(512, 256)
+        emulator_device = pygame_emulator_factory.get_pygame_emulator_device(256, 128)
         self.assertIsNotNone(emulator_device)
         logger.debug("after unit test")
 

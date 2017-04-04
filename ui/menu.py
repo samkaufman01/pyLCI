@@ -113,6 +113,7 @@ class Menu():
                 Is used for pyLCI main menu, not advised to be used in other settings.
 
         """
+        logger.debug("entered menu constructor")
         self.i = i
         self.o = o
         self.entry_height = entry_height
@@ -142,8 +143,11 @@ class Menu():
             self._in_background.clear()
 
     def to_foreground(self):
-        """ Is called when menu's ``activate()`` method is used, sets flags and performs all the actions so that menu can display its contents and receive keypresses. Also, updates the output device with rendered currently displayed menu elements."""
-        logging.info("menu {0} enabled".format(self.name))    
+        """ Is called when menu's ``activate()`` method is used, sets flags and
+        performs all the actions so that menu can display its contents
+        and receive keypresses.
+        Also, updates the output device with rendered currently displayed menu elements."""
+        logging.info("menu %s enabled", self.name)
         if callable(self.contents_hook):
             new_contents = self.contents_hook()
             old_contents = self._contents

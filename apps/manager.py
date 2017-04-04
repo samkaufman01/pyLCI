@@ -2,6 +2,7 @@ import importlib
 import os
 import logging
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class ListWithMetadata(list):
     ordering_alias = None
@@ -22,7 +23,7 @@ class AppManager():
      """
 
     def __init__(self, app_directory, menu_class, printer_func, i, o):
-        logger.debug("AppManager constructor, app_directory = {0}, menu_class= {1}, printer_func={2}, i={3}, o={4}".format(app_directory, menu_class, printer_func, i, o))
+        logger.debug("AppManager constructor, app_directory = %s", app_directory)
         self.app_directory = app_directory
         self.menu_class = menu_class
         self.printer_func = printer_func
@@ -37,7 +38,9 @@ class AppManager():
         for path, subdirs, modules in app_walk(self.app_directory): 
             logger.debug("Loading path {} with modules {} and subdirs {}".format(path, modules, subdirs))
             for subdir in subdirs:
-                #First, we create subdir menus (not yet linking because they're not created in correct order) and put them in subdir_menus.
+                #First, we create subdir menus
+                #(not yet linking because they're not created in correct order)
+                #and put them in subdir_menus.
                 subdir_path = os.path.join(path, subdir)
                 self.subdir_menus[subdir_path] = self.menu_class([], self.i, self.o, subdir_path)
             for module in modules:

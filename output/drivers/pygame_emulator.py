@@ -26,7 +26,7 @@ class Screen():
     """
 
     cursor_enabled = False
-    cursor_pos = (0, 0) #x, y
+    cursor_pos = (0, 0) #x, y, in characters, not pixels
 
     def __init__(self, debug=True, **kwargs):
         """ Sets variables for high-level functions.
@@ -46,12 +46,16 @@ class Screen():
         self.charheight = 8
         self.cols = 110/self.charwidth
         self.rows = 64/self.charheight
+        logger.debug("cols = %d, rows = %d", self.cols, self.rows)
         self.debug = debug
         self.init_display(**kwargs)
 
     def init_display(self):
         """Creates instance of pygame emulator device and stores it in a member variable. """
         logger.debug("entered pygame_emulator.init_display")
+        #note: although the emulator factory allows passing the constructor a width
+        #and height, if anything but 128 x 64 is used, it will cause the splash screen
+        #to throw an exception.
         self.device = pygame_emulator_factory.get_pygame_emulator_device()
         logger.debug("set device")
 
@@ -73,13 +77,13 @@ class Screen():
                         self.cursor_pos[1]-1,
                         self.cursor_pos[0]+self.charwidth+2,
                         self.cursor_pos[1]+self.charheight+1)
-                logger.debug("dims: %s", dims)
+                logger.debug("cursor enabled.  dims: %s", dims)
                 draw.rectangle(dims, outline="white")
             else:
                 logger.debug("cursor disabled")
 
             for line, arg in enumerate(args):
-                logger.debug("line = {0}, arg = {1}".format(line, arg))
+                logger.debug("line = %s, arg = %s", line, arg)
                 y = (line*self.charheight - 1) if line != 0 else 0
                 logger.debug("y={0}".format(y))
                 draw.text((2, y), arg, fill="white")
@@ -90,12 +94,15 @@ class Screen():
         """
         Called from menu.py refresh() so don't remove this method
         Set current input cursor to ``row`` and ``column`` specified """
+        logger.debug("setCursor entered.  row=%d, col=%d", row, col)
         self.cursor_pos = (col*self.charwidth, row*self.charheight)
 
     def noCursor(self):
         """ Turns the underline cursor off """
+        logger.debug("noCursor called")
         self.cursor_enabled = False
 
     def cursor(self):
         """ Turns the underline cursor on """
+        logger.debug("cursor called")
         self.cursor_enabled = True
