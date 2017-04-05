@@ -1,4 +1,7 @@
 from time import sleep
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def Printer(message, i, o, sleep_time=1, skippable=True):
     """Outputs string data on display as soon as it's called.                                          
@@ -54,6 +57,7 @@ def Printer(message, i, o, sleep_time=1, skippable=True):
         Printer.skip_screen_flag = False
         shown_element_numbers = [(screen_num*screen_rows)+i for i in range(screen_rows)]
         screen_data = [rendered_message[i] for i in shown_element_numbers if i in range(render_length)] 
+        logger.debug("calling o.display_data with screen_data = %s", screen_data)
         o.display_data(*screen_data)
         if skippable:
             poll_period = 0.1

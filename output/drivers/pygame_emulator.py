@@ -66,7 +66,7 @@ class Screen():
         ``*args`` is a list of strings,
                   where each string corresponds to a row of the display,
                   starting with 0."""
-        logger.debug("entered display_data with args = %s", args)
+        logger.debug("entered display_data with args = %s.  args type is %s", args, type(args))
         while self.busy_flag.isSet():
             sleep(0.01)
         self.busy_flag.set()
@@ -77,16 +77,16 @@ class Screen():
                         self.cursor_pos[1]-1,
                         self.cursor_pos[0]+self.charwidth+2,
                         self.cursor_pos[1]+self.charheight+1)
-                logger.debug("cursor enabled.  dims: %s", dims)
                 draw.rectangle(dims, outline="white")
+                logger.debug("cursor enabled.  after draw.rectangle with corners: %s", dims)
             else:
                 logger.debug("cursor disabled")
 
             for line, arg in enumerate(args):
                 logger.debug("line = %s, arg = %s", line, arg)
                 y = (line*self.charheight - 1) if line != 0 else 0
-                logger.debug("y={0}".format(y))
                 draw.text((2, y), arg, fill="white")
+                logger.debug("after draw.text(2,%d), %s", y, arg)
 
         self.busy_flag.clear()
 

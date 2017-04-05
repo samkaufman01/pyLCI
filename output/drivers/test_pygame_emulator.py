@@ -44,6 +44,16 @@ class TestPyGameEmulator(unittest.TestCase):
         screen_data = ['row 1', 'row 2']
         screen.display_data(screen_data)
 
+    def test_display_text_tuple(self):
+        """ tests displaying 3 lines of text passed in as a tuple.
+            Expected result:  3 lines of text displayed on screen
+            Actual result: exception thrown out of PIL/ImageDraw.py
+            SystemError, error return without exception set
+        """
+        screen = pygame_emulator.Screen()
+        screen_data = ('row 1', 'row 2', 'row 3')
+        screen.display_data(screen_data)
+
     def test_display_multiline_text(self):
         """tests displaying 3 lines of text separated by line feeds
            Expected result:  3 lines of text are shown on screen.
@@ -61,7 +71,7 @@ def main():
     #logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     screen = pygame_emulator.Screen()
-    screen_data = '\n'.join(['row 1', 'row 2', 'row 3'])
+    screen_data = ('row 1', 'row 2', 'row 3')
     screen.display_data(screen_data)
 
 if __name__ == "__main__":

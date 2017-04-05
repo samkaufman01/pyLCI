@@ -7,8 +7,10 @@ from copy import copy
 import logging
 from threading import Event
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def to_be_foreground(func): #A safety check wrapper so that certain checks don't get called if menu is not the one active
+    logger.debug("to_be_foreground entered")
     def wrapper(self, *args, **kwargs):
         if self.in_foreground:
             return func(self, *args, **kwargs)
@@ -133,10 +135,12 @@ class Menu():
 
     @property
     def in_background(self):
+        logger.debug("in_background getter entered")
         return self._in_background.isSet()
 
     @in_background.setter
     def in_background(self, value):
+        logger.debug("in_backgroud setter entered with value %d", value)
         if value == True:
             self._in_background.set()
         elif value == False:
@@ -147,6 +151,7 @@ class Menu():
         performs all the actions so that menu can display its contents
         and receive keypresses.
         Also, updates the output device with rendered currently displayed menu elements."""
+        logger.debug("to_foreground entered")
         logging.info("menu %s enabled", self.name)
         if callable(self.contents_hook):
             new_contents = self.contents_hook()
@@ -161,13 +166,15 @@ class Menu():
     @to_be_foreground
     def to_background(self):
         """ Signals ``activate`` to finish executing """
+        logger.debug("to_background entered")
         self.in_foreground = False
         logging.info("menu {0} disabled".format(self.name))    
 
     def activate(self):
         """ A method which is called when menu needs to start operating. Is blocking, sets up input&output devices, renders the menu and waits until self.in_background is False, while menu callbacks are executed from the input device thread.
         This method also raises MenuExitException if menu exited due to it and ``catch_exit`` is set to False."""
-        logging.info("menu {0} activated".format(self.name))    
+        logging.info("menu {0} activated".format(self.name))
+        logger.debug("activate entered")
         self.exit_exception = False
         self.o.cursor()
         self.to_foreground() 
@@ -182,6 +189,7 @@ class Menu():
         return True
 
     def deactivate(self):
+        logger.debug("deactivate entered")
         """ Deactivates the menu completely, exiting it. As for now, pointer state is preserved through menu activations/deactivations """
         self.in_foreground = False
         self.in_background = False
@@ -189,6 +197,7 @@ class Menu():
 
     @to_be_foreground
     def scroll(self):
+        logger.debug("scroll entered")
         if self.scrolling["enabled"] and not self.scrolling["current_finished"] and self.scrolling["current_scrollable"]:
             self.scrolling["counter"] += 1
             if self.scrolling["counter"] == 10:
@@ -197,6 +206,7 @@ class Menu():
                 self.refresh()
             
     def reset_scrolling(self):
+        logger.debug("reset_scrolling entered")
         self.scrolling["current_finished"] = False
         self.scrolling["pointer"] = 0
         self.scrolling["counter"] = 0
@@ -214,6 +224,7 @@ class Menu():
         """ Moves the pointer one element down, if possible. 
         |Is typically used as a callback from input event processing thread.
         |TODO: support going from bottom to top when pressing "down" with last menu element selected."""
+        logger.debug("move_down selected")
         if self.pointer < (len(self._contents)-1):
             logging.debug("moved down")
             self.pointer += 1  
@@ -226,6 +237,7 @@ class Menu():
     @to_be_foreground
     def page_down(self):
         """ Moves the pointer 5 elements down, if possible. If not possible, moves as far as it can"""
+        logger.debug("page_down entered")
         counter = 5
         while counter != 0 and self.pointer < (len(self._contents)-1):
             logging.debug("moved down")
@@ -240,6 +252,7 @@ class Menu():
         """ Moves the pointer one element up, if possible. 
         |Is typically used as a callback from input event processing thread.
         |TODO: support going from top to bottom when pressing "up" with first menu element selected."""
+        logger.debug("move_up entered")
         if self.pointer != 0:
             logging.debug("moved up")
             self.pointer -= 1
@@ -252,6 +265,7 @@ class Menu():
     @to_be_foreground
     def page_up(self):
         """ Moves the pointer 5 elements down, if possible. If not possible, moves as far as it can"""
+        logger.debug("page_up entered")
         counter = 5
         while counter != 0 and self.pointer != 0:
             logging.debug("moved down")
@@ -268,7 +282,7 @@ class Menu():
         |After callback's execution is finished, sets the keymap again and refreshes the screen.
         |If menu has no elements, exits the menu.
         |If MenuExitException is returned from the callback, exits menu, too."""
-        logging.debug("element selected")
+        logging.debug("select_element entered")
         self.to_background()
         if len(self._contents) == 0:
             self.deactivate()
@@ -290,6 +304,7 @@ class Menu():
 
     def generate_keymap(self):
         """Sets the keymap. In future, will allow per-system keycode-to-callback tweaking using a config file. """
+        logger.debug("generate_keymap entered")
         keymap = {
             "KEY_RIGHT":lambda: self.print_name(),
             "KEY_UP":lambda: self.move_up(),
@@ -305,6 +320,7 @@ class Menu():
 
     def set_contents(self, contents):
         """Sets the menu contents, as well as additionally re-sets ``last`` & ``first_displayed_entry`` pointers and calculates the value for ``last_displayed_entry`` pointer."""
+        logger.debug("entered set_contents with contents = %s", contents)
         self.contents = contents
         self.process_contents()
         #Calculating the pointer to last element displayed
@@ -332,11 +348,19 @@ class Menu():
         #Let's fix the pointer if it needs to be fixed
         old_contents = self._contents
         self._contents = self.contents
+        logger.debug("entered process_contents.  old_contents = %s, contents = %s",
+                     old_contents, self._contents)
+        logger.debug(
+            "len(self._contents) < len(old_contents)=%d , self.pointer > len(self._contents)-1= %d",
+            len(self._contents) < len(old_contents), self.pointer > len(self._contents)-1)
         if len(self._contents) < len(old_contents) and self.pointer > len(self._contents)-1:
             if len(self._contents) > 0:
                 self.pointer = len(self._contents) - 1 #Pointer went too far, setting it to last entry available
+                logger.debug("#Pointer went too far, setting it to last entry available")
             else:
                 self.pointer = 0 #No elements, pointer should be 0
+                logger.debug("No elements, pointer should be 0")
+
         if self.append_exit: 
             element_callbacks = [element[1] if len(element)>1 else None for element in copy(self._contents)]
             for index, callback in enumerate(element_callbacks):
@@ -352,6 +376,7 @@ class Menu():
     @to_be_foreground
     def set_keymap(self):
         """Generate and sets the input device's keycode-to-callback mapping. Re-starts the input device because ofpassing-variables-between-threads issues."""
+        logger.debug("set_keymap entered")
         self.generate_keymap()
         self.i.stop_listen()
         self.i.clear_keymap()
@@ -362,6 +387,7 @@ class Menu():
         """Generates the displayed data in a way that the output device accepts. The output of this function can be fed in the o.display_data function.
         |Corrects last&first_displayed_entry pointers if necessary, then gets the currently displayed elements' numbers, renders each one of them and concatenates them into one big list which it returns.
         |Doesn't support partly-rendering entries yet."""
+        logger.debug("get_displayed_data entered")
         displayed_data = []
         if len(self._contents) == 0:
             return [self.no_entry_message]
@@ -393,6 +419,7 @@ class Menu():
            TODO: omit " " and "*" if element height matches the display's row count.
         If element's representation is a list, it returns that list as the rendered entry, trimming its elements down or padding the list with empty strings to match the element's height as defined.
         """
+        logger.debug("render_displayed_entry entered, entry_num= %d", entry_num)
         rendered_entry = []
         entry_content = self._contents[entry_num][0]
         display_columns = self.o.cols
