@@ -42,8 +42,11 @@ class TestPyGameEmulator(unittest.TestCase):
         """
         screen = pygame_emulator.Screen()
         screen_data = ['row 1', 'row 2']
-        screen.display_data(screen_data)
-
+        #TODO:  SystemError is an internal exception in the python
+        #interpreter and should eventually be reported to the python
+        #maintainer
+        with self.assertRaises(SystemError):
+            screen.display_data(screen_data)
     def test_display_text_tuple(self):
         """ tests displaying 3 lines of text passed in as a tuple.
             Expected result:  3 lines of text displayed on screen
@@ -51,7 +54,25 @@ class TestPyGameEmulator(unittest.TestCase):
             SystemError, error return without exception set
         """
         screen = pygame_emulator.Screen()
-        #screen_data = 'row 1', 'row 2', 'row 3'
+         #note:  when passing data via *args like display_data does,
+        #python silently creates a tuple out of these args.
+        #so screen_data becomes a tuple inside a second tuple,
+        #which causes an exception
+        screen_data = ('row 1', 'row 2', 'row 3')
+        #TODO:  SystemError is an internal exception in the python
+        #interpreter and should eventually be reported to the python
+        #maintainer
+        with self.assertRaises(SystemError):
+            screen.display_data(screen_data)
+
+    def test_display_text_multiple_args(self):
+        """ tests displaying 3 lines of text passed in as a tuple.
+            Expected result:  3 lines of text displayed on screen
+            Actual result: 3 lines of text displayed on screen
+        """
+        screen = pygame_emulator.Screen()
+        #note:  when passing data via *args like display_data does,
+        #python silently creates a tuple out of these args
         screen.display_data('row 1', 'row 2', 'row 3')
 
     def test_display_multiline_text(self):
@@ -71,8 +92,9 @@ def main():
     #logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     screen = pygame_emulator.Screen()
-    screen_data = ('row 1', 'row 2', 'row 3')
-    screen.display_data(screen_data)
+    #note:  when passing data via *args like display_data does,
+    #python silently creates a tuple out of these args
+    screen.display_data('row 1', 'row 2', 'row 3')
 
 if __name__ == "__main__":
     main()

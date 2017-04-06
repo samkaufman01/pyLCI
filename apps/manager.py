@@ -1,8 +1,7 @@
 import importlib
 import os
 import logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
 
 class ListWithMetadata(list):
     ordering_alias = None
@@ -23,6 +22,8 @@ class AppManager():
      """
 
     def __init__(self, app_directory, menu_class, printer_func, i, o):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
         logger.debug("AppManager constructor, app_directory = %s", app_directory)
         self.app_directory = app_directory
         self.menu_class = menu_class
@@ -81,6 +82,8 @@ class AppManager():
         return base_menu
 
     def load_app(self, app_path):
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)        
         logger.debug("entered load_app with app_path = {0}".format(app_path))
         app_import_path = app_path.replace('/', '.')
         logger.debug("app_import_path = {0}".format(app_import_path))

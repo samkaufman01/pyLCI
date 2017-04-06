@@ -41,11 +41,14 @@ class Screen():
 
         logger.debug("entering Screen constructor, kwargs = %s", kwargs)
         self.busy_flag = Event()
-        #TODO: this needs to be adjusted based on emulator window size
+        #TODO: this needs to be adjusted based on window/screen size
         self.charwidth = 6
         self.charheight = 8
         self.cols = 110/self.charwidth
         self.rows = 64/self.charheight
+        #with the default 128 pixels wide and 64 pixels high screen
+        #implicitly required for the splash screen, this works
+        #out to be 18 columns wide by 8 rows high
         logger.debug("cols = %d, rows = %d", self.cols, self.rows)
         self.debug = debug
         self.init_display(**kwargs)
@@ -65,7 +68,10 @@ class Screen():
         This function does the actual work of printing things to display.
         ``*args`` is a list of strings,
                   where each string corresponds to a row of the display,
-                  starting with 0."""
+                  starting with 0.
+                  Note:  the emulator does not support passing tuples, lists
+                  or anything except comma delimited simple strings as args.
+        """
         logger.debug("entered display_data with args = %s.  args type is %s", args, type(args))
         while self.busy_flag.isSet():
             sleep(0.01)
@@ -82,9 +88,14 @@ class Screen():
             else:
                 logger.debug("cursor disabled")
 
-            logger.debug("type(args)=%s",type(args))
+            logger.debug("type(args)=%s", type(args))
             for line, arg in enumerate(args):
                 logger.debug("line = %s, arg = %s, type(arg)=%s", line, arg, type(arg))
+                #Emulator only:  Passing anything except a string to draw.text will cause PIL to
+                #throw an exception.  Warn 'em here via the log.
+                if not isinstance(arg, str):
+                    logger.warning(
+                        "emulator only likes strings fed to draw.text, prepare for exception")
                 y = (line*self.charheight - 1) if line != 0 else 0
                 draw.text((2, y), arg, fill="white")
                 logger.debug("after draw.text(2,%d), %s", y, arg)
