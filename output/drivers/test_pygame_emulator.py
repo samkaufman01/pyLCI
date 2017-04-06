@@ -51,8 +51,8 @@ class TestPyGameEmulator(unittest.TestCase):
             SystemError, error return without exception set
         """
         screen = pygame_emulator.Screen()
-        screen_data = ('row 1', 'row 2', 'row 3')
-        screen.display_data(screen_data)
+        #screen_data = 'row 1', 'row 2', 'row 3'
+        screen.display_data('row 1', 'row 2', 'row 3')
 
     def test_display_multiline_text(self):
         """tests displaying 3 lines of text separated by line feeds

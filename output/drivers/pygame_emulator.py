@@ -82,8 +82,9 @@ class Screen():
             else:
                 logger.debug("cursor disabled")
 
+            logger.debug("type(args)=%s",type(args))
             for line, arg in enumerate(args):
-                logger.debug("line = %s, arg = %s", line, arg)
+                logger.debug("line = %s, arg = %s, type(arg)=%s", line, arg, type(arg))
                 y = (line*self.charheight - 1) if line != 0 else 0
                 draw.text((2, y), arg, fill="white")
                 logger.debug("after draw.text(2,%d), %s", y, arg)
