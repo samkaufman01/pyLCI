@@ -82,8 +82,6 @@ class AppManager():
         return base_menu
 
     def load_app(self, app_path):
-        logger = logging.getLogger()
-        logger.setLevel(logging.DEBUG)        
         logger.debug("entered load_app with app_path = {0}".format(app_path))
         app_import_path = app_path.replace('/', '.')
         logger.debug("app_import_path = {0}".format(app_import_path))
@@ -171,10 +169,13 @@ def app_walk(base_dir):
     return walk_results
 
 def is_module_dir(dir_path):
+    logger.debug("is_module_dir entered with dir_path = %s", dir_path)
     contents = os.listdir(dir_path)
     if "main.py" in contents:
         if 'do_not_load' not in contents:
+            logger.debug("returning True")
             return True
+    logger.debug("returning False")
     return False
 
 def is_subdir(dir_path):

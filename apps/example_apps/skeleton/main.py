@@ -1,9 +1,17 @@
+import logging
+logger = logging.getLogger(__name__)
+
 menu_name = "Skeleton app" #App name as seen in main menu while using the system
 
 from subprocess import call
 from time import sleep
 
-from pyLCI.ui import Menu, Printer
+#had to change this from pyLCI.ui to just ui
+#or the import would fail.
+from ui import Menu, Printer
+#from pyLCI.ui.menu import Menu
+#from pyLCI.ui.printer import Printer
+
 
 def call_internal():
     Printer(["Calling internal", "command"], i, o, 1)
