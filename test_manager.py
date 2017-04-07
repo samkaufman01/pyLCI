@@ -1,7 +1,11 @@
 """tests manager.py"""
 import unittest
+#note:  changeing apps.manager to pyLCI.apps.manager breaks vscode test discovery.
+#yet pyLint flags the import statement below with W0403, which recommends
+#changing the import to pyLCI.apps.manager
+#TODO: figure out how to make both vscode and pylint happy
 import apps.manager
-#import pyLCI.apps.example_apps.skeleton
+
 import logging
 from output import output
 
