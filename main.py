@@ -44,8 +44,8 @@ try: #If there's an internal error, we show it on display and exit
     input.init()
     i = input.listener
 except Exception as ex:
-    logger.error("input.init() error: {0}".format(ex))
-    Printer(["Oops. :(", "y u make mistake"], None, o, 0) #Yeah, that's about all the debug data. 
+    logger.error("input.init() error: %s", ex)
+    Printer(["Oops. :(", "y u make mistake"], None, o, 0) #Yeah, that's about all the debug data
     raise
 
 def splash_screen():
@@ -53,9 +53,9 @@ def splash_screen():
     try:
         from splash import splash
         splash(i, o)
-    except ImportError as importError:
-        logger.error("splash_screen error = {0}".format(importError))
-        pass
+    except ImportError as import_error:
+        logger.error("splash_screen error = %s", import_error)
+
 
 def exception_wrapper(callback):
     """This is a wrapper for all applications and menus.
