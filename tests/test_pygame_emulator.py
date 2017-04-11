@@ -6,7 +6,13 @@
 
 import logging
 import unittest
-import pygame_emulator
+import sys
+
+sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
+import os
+os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
+
+import zerophone.output.drivers.pygame_emulator
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
@@ -21,7 +27,7 @@ class TestPyGameEmulator(unittest.TestCase):
             Expected result:  a window will flash on the screen with "hello world" then
             the window will disappear as screen goes out of scope
         """
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
         #should flash a window on the screen with hello world
         screen.display_data("hello world")
 
@@ -31,7 +37,7 @@ class TestPyGameEmulator(unittest.TestCase):
             the window will disappear as screen goes out of scope
             Actual result:  text is always displayed at row 1, column 1
         """
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
         screen.setCursor(4, 5)
         screen.display_data("row 4, column 5")
 
@@ -40,7 +46,7 @@ class TestPyGameEmulator(unittest.TestCase):
             Expected result:  2 lines of text displayed on screen
             Actual result: exception thrown out of PIL/ImageDraw.py
         """
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
         screen_data = ['row 1', 'row 2']
         #TODO:  SystemError is an internal exception in the python
         #interpreter and should eventually be reported to the python
@@ -53,7 +59,7 @@ class TestPyGameEmulator(unittest.TestCase):
             Actual result: exception thrown out of PIL/ImageDraw.py
             SystemError, error return without exception set
         """
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
          #note:  when passing data via *args like display_data does,
         #python silently creates a tuple out of these args.
         #so screen_data becomes a tuple inside a second tuple,
@@ -70,7 +76,7 @@ class TestPyGameEmulator(unittest.TestCase):
             Expected result:  3 lines of text displayed on screen
             Actual result: 3 lines of text displayed on screen
         """
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
         #note:  when passing data via *args like display_data does,
         #python silently creates a tuple out of these args
         screen.display_data('row 1', 'row 2', 'row 3')
@@ -79,7 +85,7 @@ class TestPyGameEmulator(unittest.TestCase):
         """tests displaying 3 lines of text separated by line feeds
            Expected result:  3 lines of text are shown on screen.
            Actual result:  3 lines of text are shown on screen."""
-        screen = pygame_emulator.Screen()
+        screen = zerophone.output.drivers.pygame_emulator.Screen()
         screen_data = '\n'.join(['row 1', 'row 2', 'row 3'])
         screen.display_data(screen_data)
 
