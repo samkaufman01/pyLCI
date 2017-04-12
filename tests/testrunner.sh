@@ -1,8 +1,11 @@
 #!/bin/bash
-#PATH=$PATH:/home/dneary/Documents/vcs/git/zerophone
-#echo $PATH
+
+#need to set this path here so all the imports work from a consistent location
+#this will be moved elsewhere, eventually
 export PYTHONPATH=/home/dneary/Documents/vcs/git/zerophone
 echo $PYTHONPATH
+
+
 python -m unittest test_path.TestPath
 python -m unittest test_manager.TestManager
 python -m unittest test_pygame_emulator_factory.TestPyGameEmulator
