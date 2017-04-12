@@ -6,19 +6,14 @@
 
 import logging
 import unittest
-import sys
-
-sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
-import os
-os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
 
 import zerophone.output.drivers.pygame_emulator
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+
 
 class TestPyGameEmulator(unittest.TestCase):
     """tests pygame emulator public methods"""
@@ -97,7 +92,7 @@ def main():
     logging.basicConfig(format=LOG_FORMAT)
     #logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-    screen = pygame_emulator.Screen()
+    screen = zerophone.output.drivers.pygame_emulator.Screen()
     #note:  when passing data via *args like display_data does,
     #python silently creates a tuple out of these args
     screen.display_data('row 1', 'row 2', 'row 3')

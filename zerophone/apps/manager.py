@@ -1,7 +1,7 @@
 import importlib
 import os
 import logging
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 class ListWithMetadata(list):
     ordering_alias = None
@@ -22,8 +22,8 @@ class AppManager():
      """
 
     def __init__(self, app_directory, menu_class, printer_func, i, o):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.DEBUG)
+
+        #logger.setLevel(logging.DEBUG)
         logger.debug("AppManager constructor, app_directory = %s", app_directory)
         self.app_directory = app_directory
         self.menu_class = menu_class

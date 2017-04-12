@@ -2,7 +2,7 @@ menu_name = "Clock"
 
 from datetime import datetime
 
-from ui import Refresher
+from zerophone.ui import Refresher
 
 def show_time():
     now = datetime.now()

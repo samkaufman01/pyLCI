@@ -7,14 +7,13 @@ import argparse
 #Welcome to pyLCI innards
 #Here, things are about i and o, which are input and output
 #And we output things for debugging, so o goes first.
-from output import output
+from zerophone.output import output
 
 import logging
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
+logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 #Debugging helper
 import threading
@@ -31,6 +30,7 @@ def dumpthreads(*args):
         print("")
 signal.signal(signal.SIGUSR1, dumpthreads)
 
+logger.debug("entered output.init(), os.getcwd()=%s", os.getcwd())
 #These lines are here so that welcome message stays on the screen a little longer:
 output.init()
 o = output.screen

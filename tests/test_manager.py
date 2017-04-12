@@ -1,8 +1,5 @@
 """tests manager.py"""
 import sys
-sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
-import os
-os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
 
 import unittest
 #note:  changing apps.manager to zerophone.apps.manager breaks vscode test discovery.
@@ -15,9 +12,9 @@ import logging
 from zerophone.output import output
 
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.info("sys.path=%s", sys.path)
 
 class TestManager(unittest.TestCase):
     """tests AppManager class"""
@@ -29,27 +26,27 @@ class TestManager(unittest.TestCase):
     def test_load_skelton_app(self):
         """tests loading skeleton app.
         """
-        output.init()
+        output.init("../zerophone/")
         output_device = output.screen
         appmanager_instance = zerophone.apps.manager.AppManager("apps", None, None, None, output_device)
         self.assertIsNotNone(appmanager_instance)
-        app = appmanager_instance.load_app("apps/example_apps/skeleton")
+        app = appmanager_instance.load_app("zerophone/apps/example_apps/skeleton")
         self.assertIsNotNone(app)
 
     def test_load_clock_app(self):
         """tests loading clock app"""
         appmanager_instance = zerophone.apps.manager.AppManager("apps", None, None, None, None)
         self.assertIsNotNone(appmanager_instance)
-        app = appmanager_instance.load_app("apps/clock")
+        app = appmanager_instance.load_app("zerophone/apps/clock")
         self.assertIsNotNone(app)
 
     def test_load_scrolling_test_app(self):
         """tests loading scrolling_test app"""
-        output.init()
+        output.init("../zerophone/")
         output_device = output.screen
         appmanager_instance = zerophone.apps.manager.AppManager("apps", None, None, None, output_device)
         self.assertIsNotNone(appmanager_instance)
-        app = appmanager_instance.load_app("apps/example_apps/scrolling_test")
+        app = appmanager_instance.load_app("zerophone/apps/example_apps/scrolling_test")
         self.assertIsNotNone(app)
 
 

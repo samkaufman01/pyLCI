@@ -4,17 +4,17 @@ import logging
 import unittest
 
 import sys
-sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
+#sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
 import os
-os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
+#os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
 
 import zerophone.output.drivers.pygame_emulator_factory
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+
 
 class TestPyGameEmulator(unittest.TestCase):
     """unit test class for pygame emulator"""

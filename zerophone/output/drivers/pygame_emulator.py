@@ -9,7 +9,6 @@ import pygame_emulator_factory
 from luma.core.render import canvas
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 class Screen():
     """

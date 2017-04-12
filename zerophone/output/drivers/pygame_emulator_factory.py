@@ -11,7 +11,7 @@ import luma.emulator.device
 logging.getLogger("PIL").setLevel(logging.ERROR)
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 def get_pygame_emulator_device(width=128, height=64):
     """

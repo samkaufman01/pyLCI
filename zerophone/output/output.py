@@ -1,20 +1,24 @@
-from zerophone.helpers import read_config
+from zerophone.helpers.config_parse import read_config
 import importlib
 import os
 import logging
 logger = logging.getLogger(__name__)
 screen = None
 
-def init():
+def init(path_to_config_json=None):
     """ This function is called by main.py to
         read the output configuration,
         pick the corresponding drivers
         and initialize a Screen object.
 
     It also sets ``screen`` global of ``output`` module with created ``Screen`` object."""
-    logging.debug("entered output.ini(), os.getcwd()=%s", os.getcwd())
+    logger.debug("entered output.init(), os.getcwd()=%s", os.getcwd())
     global screen
-    config = read_config("config.json")
+
+    config_file="config.json"
+    if path_to_config_json is not None:
+        config_file = path_to_config_json + config_file
+    config = read_config(config_file)
     output_config = config["output"][0]
     driver_name = output_config["driver"]
     driver_module = importlib.import_module("zerophone.output.drivers."+driver_name)

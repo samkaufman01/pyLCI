@@ -7,7 +7,7 @@ from copy import copy
 import logging
 from threading import Event
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 def to_be_foreground(func): #A safety check wrapper so that certain checks don't get called if menu is not the one active
     logger.debug("to_be_foreground entered")
