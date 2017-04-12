@@ -49,7 +49,7 @@ class TestManager(unittest.TestCase):
         app = appmanager_instance.load_app("zerophone/apps/example_apps/scrolling_test")
         self.assertIsNotNone(app)
 
-
+"""
 #Workaround for Debug Test not yet working in vscode
 def main():
     output.init()
@@ -61,4 +61,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+"""

@@ -4,15 +4,13 @@ import unittest
 import logging
 import os
 import sys
-import mock
-import modem
+import zerophone.apps.phone.modem
 
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 class TestModem(unittest.TestCase):
     """tests Modem class in phone.py"""
@@ -23,7 +21,7 @@ class TestModem(unittest.TestCase):
             "entering test_constructor constructor, __package__ is %s, __name__ is %s",
             __package__, __name__)
         logger.debug("os.getcwd()=%s", os.getcwd())
-        modem_instance = modem.Modem("/dev/ttyAMA0", timeout=0.2, monitor=False)
+        modem_instance = zerophone.apps.phone.modem.Modem("/dev/ttyAMA0", timeout=0.2, monitor=False)
         self.assertIsNotNone(modem_instance)
 
 '''    def test_constructor_yes_monitoring(self):

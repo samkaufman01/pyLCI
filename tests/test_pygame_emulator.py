@@ -11,7 +11,7 @@ import zerophone.output.drivers.pygame_emulator
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
+logging.basicConfig(format=LOG_FORMAT, level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 

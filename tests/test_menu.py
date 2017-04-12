@@ -1,23 +1,18 @@
 """tests menu.py"""
 import unittest
 import logging
-import menu
-from output import output
+import zerophone.ui.menu
+from zerophone.output import output
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
-
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class TestMenu(unittest.TestCase):
     """tests Menu class"""
     def test_constructor(self):
         """tests constructor"""
         contents = []
-        #contents.append("test menu item 1")
-        #contents.append(None)
-        output.init()
+        output.init("../zerophone/")
         output_device = output.screen
-        menu_instance = menu.Menu(contents, None, output_device, None)
+        menu_instance = zerophone.ui.menu.Menu(contents, None, output_device, None)
         self.assertIsNotNone(menu_instance)
