@@ -8,7 +8,7 @@ from time import sleep
 
 #had to change this from pyLCI.ui to just ui
 #or the import would fail.
-from ui import Menu, Printer
+from zerophone.ui import Menu, Printer
 #from pyLCI.ui.menu import Menu
 #from pyLCI.ui.printer import Printer
 

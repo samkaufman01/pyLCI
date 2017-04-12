@@ -3,7 +3,7 @@ menu_name = "Scrolling test"
 i = None 
 o = None
 
-from ui import Menu, Printer, Listbox, PathPicker
+from zerophone.ui import Menu, Printer, Listbox, PathPicker
 
 callback = None
 

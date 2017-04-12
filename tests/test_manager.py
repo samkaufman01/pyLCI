@@ -12,9 +12,9 @@ import logging
 from zerophone.output import output
 
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("sys.path=%s", sys.path)
+logger.debug("sys.path=%s", sys.path)
 
 class TestManager(unittest.TestCase):
     """tests AppManager class"""
