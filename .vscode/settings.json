@@ -1,0 +1,12 @@
+{
+    "python.unitTest.unittestArgs": [
+        "-s",
+        "/home/dneary/Documents/vcs/git/zerophone/tests",
+        "-p",
+        "test_*.py",
+        "-t",
+        "/home/dneary/Documents/vcs/git/zerophone",
+        "-v"
+    ],
+    "python.unitTest.unittestEnabled": true
+}
