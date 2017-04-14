@@ -3,11 +3,6 @@
 import logging
 import unittest
 
-import sys
-#sys.path.append('/home/dneary/Documents/vcs/git/zerophone')
-import os
-#os.chdir('/home/dneary/Documents/vcs/git/zerophone/zerophone')
-
 import zerophone.output.drivers.pygame_emulator_factory
 
 #set up logging
@@ -21,20 +16,22 @@ class TestPyGameEmulator(unittest.TestCase):
     def test_factory(self):
         """verifies factory returns non-null instance"""
         logger.debug("before invoke")
-        emulator_device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device()
+        emulator_device = zerophone.output.drivers.pygame_emulator_factory.\
+        get_pygame_emulator_device()
         self.assertIsNotNone(emulator_device)
         logger.debug("after unit test")
 
     def test_factory_set_size(self):
         """tests setting custom size for emulator device window"""
-        emulator_device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(256, 128)
+        emulator_device = zerophone.output.drivers.pygame_emulator_factory.\
+        get_pygame_emulator_device(256, 128)
         self.assertIsNotNone(emulator_device)
         logger.debug("after unit test")
 
 """
 used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)
-"""
+
 def main():
     logger.debug("entering main")
     emulator = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device()
@@ -42,3 +39,4 @@ def main():
 if __name__ == "__main__":
     main()
 
+"""

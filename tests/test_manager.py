@@ -1,14 +1,8 @@
 """tests manager.py"""
 import sys
-
 import unittest
-#note:  changing apps.manager to zerophone.apps.manager breaks vscode test discovery.
-#yet pyLint flags the import statement below with W0403, which recommends
-#changing the import to zerophone.apps.manager
-#TODO: figure out how to make both vscode and pylint happy
-import zerophone.apps.manager
-
 import logging
+import zerophone.apps.manager
 from zerophone.output import output
 
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
@@ -26,9 +20,10 @@ class TestManager(unittest.TestCase):
     def test_load_skelton_app(self):
         """tests loading skeleton app.
         """
-        output.init("../zerophone/")
+        output.init("./zerophone/")
         output_device = output.screen
-        appmanager_instance = zerophone.apps.manager.AppManager("apps", None, None, None, output_device)
+        appmanager_instance = zerophone.apps.manager.AppManager(
+            "apps", None, None, None, output_device)
         self.assertIsNotNone(appmanager_instance)
         app = appmanager_instance.load_app("zerophone/apps/example_apps/skeleton")
         self.assertIsNotNone(app)
@@ -42,9 +37,10 @@ class TestManager(unittest.TestCase):
 
     def test_load_scrolling_test_app(self):
         """tests loading scrolling_test app"""
-        output.init("../zerophone/")
+        output.init("./zerophone/")
         output_device = output.screen
-        appmanager_instance = zerophone.apps.manager.AppManager("apps", None, None, None, output_device)
+        appmanager_instance = zerophone.apps.manager.AppManager(
+            "apps", None, None, None, output_device)
         self.assertIsNotNone(appmanager_instance)
         app = appmanager_instance.load_app("zerophone/apps/example_apps/scrolling_test")
         self.assertIsNotNone(app)

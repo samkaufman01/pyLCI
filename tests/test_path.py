@@ -3,7 +3,6 @@
 import logging
 import sys
 import unittest
-import os
 
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)

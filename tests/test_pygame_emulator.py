@@ -87,7 +87,7 @@ class TestPyGameEmulator(unittest.TestCase):
 """
 used to debug unit test as I can't get the Debug Test function
 in VS Code to work (yet)
-"""
+
 def main():
     logging.basicConfig(format=LOG_FORMAT)
     #logger = logging.getLogger(__name__)
@@ -99,3 +99,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

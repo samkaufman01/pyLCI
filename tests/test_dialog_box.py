@@ -1,10 +1,9 @@
 """test for class DialogBox"""
-
 import unittest
 import logging
 import os
 import zerophone.ui.dialog
-import dummyoutputdevice
+import tests.dummyoutputdevice
 
 
 #set up logging
@@ -20,7 +19,7 @@ class TestDialogBox(unittest.TestCase):
         logger.debug("entering DialogBox test_constructor")
         logger.debug("os.getcwd()=%s", os.getcwd())
         default_options = "ync"
-        output_device = dummyoutputdevice.DummyOutputDevice()
+        output_device = tests.dummyoutputdevice.DummyOutputDevice()
         dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
         self.assertIsNotNone(dialog_box)
 
@@ -29,9 +28,8 @@ class TestDialogBox(unittest.TestCase):
         logger.debug("entering DialogBox test_constructor")
         logger.debug("os.getcwd()=%s", os.getcwd())
         default_options = "ync"
-        output_device = dummyoutputdevice.DummyOutputDevice()
+        output_device = tests.dummyoutputdevice.DummyOutputDevice()
         dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
         self.assertIsNotNone(dialog_box.keymap)
         for callback in [dialog_box.keymap[key] for key in dialog_box.keymap.keys()]:
             self.assertIsNotNone(callback)
-        

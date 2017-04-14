@@ -20,8 +20,9 @@ class TestLumaCanvas(unittest.TestCase):
     """unit test class to verify luma emulator canvas object functionality"""
     def test_canvas_draw_rectangle(self):
         """verifies capabilities of pygame emulator draw rectangle method"""
-        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
-                                                                    EMULATOR_WINDOW_HEIGHT)
+        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(
+            EMULATOR_WINDOW_WIDTH,
+            EMULATOR_WINDOW_HEIGHT)
 
         with canvas(device) as draw:
             #box_boundary is in pixels, upper left, lower right
@@ -34,8 +35,9 @@ class TestLumaCanvas(unittest.TestCase):
             Expected Result: 2 lines of text drawn in different places.
             Actual Result:  2 lines of text drawn in different places
             """
-        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
-                                                                    EMULATOR_WINDOW_HEIGHT)
+        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(
+            EMULATOR_WINDOW_WIDTH,
+            EMULATOR_WINDOW_HEIGHT)
 
         with canvas(device) as draw:
             #x,y are in pixels
@@ -51,8 +53,9 @@ class TestLumaCanvas(unittest.TestCase):
            Expected result:  2 lines of text with a rectangle bounding the entire emulator window.
            Actual result: 2 lines of text with a rectangle bounding the entire emulator window.
         """
-        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(EMULATOR_WINDOW_WIDTH,
-                                                                    EMULATOR_WINDOW_HEIGHT)
+        device = zerophone.output.drivers.pygame_emulator_factory.get_pygame_emulator_device(
+            EMULATOR_WINDOW_WIDTH,
+            EMULATOR_WINDOW_HEIGHT)
 
         with canvas(device) as draw:
             #x,y are in pixels
