@@ -2,15 +2,15 @@
 import unittest
 import logging
 import os
+print "os.getcwd()", os.getcwd()
 import zerophone.ui.dialog
-import tests.dummyoutputdevice
+from zerophone.output import output
 
 
 #set up logging
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 class TestDialogBox(unittest.TestCase):
     """tests dialog box class"""
@@ -19,7 +19,8 @@ class TestDialogBox(unittest.TestCase):
         logger.debug("entering DialogBox test_constructor")
         logger.debug("os.getcwd()=%s", os.getcwd())
         default_options = "ync"
-        output_device = tests.dummyoutputdevice.DummyOutputDevice()
+        output.init("./zerophone/")
+        output_device = output.screen
         dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
         self.assertIsNotNone(dialog_box)
 
@@ -28,8 +29,30 @@ class TestDialogBox(unittest.TestCase):
         logger.debug("entering DialogBox test_constructor")
         logger.debug("os.getcwd()=%s", os.getcwd())
         default_options = "ync"
-        output_device = tests.dummyoutputdevice.DummyOutputDevice()
+        output.init("./zerophone/")
+        output_device = output.screen
         dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
         self.assertIsNotNone(dialog_box.keymap)
         for callback in [dialog_box.keymap[key] for key in dialog_box.keymap.keys()]:
             self.assertIsNotNone(callback)
+
+    def test_dialog_with_real_output(self):
+        """tests splicing in real output instead of dummy output"""
+        default_options = "ync"
+        output.init("./zerophone/")
+        output_device = output.screen
+        dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
+        self.assertIsNotNone(dialog_box)
+
+"""
+def main():
+
+    default_options = "ync"
+    output.init("./zerophone/")
+    output_device = output.screen
+    dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
+
+
+if __name__ == "__main__":
+    main()
+"""

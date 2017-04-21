@@ -11,13 +11,32 @@
         "secret": "my_secret",
         "host": "localhost"
     },
+    {
+        "name": "zerophone-tests",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": true,
+        "pythonPath": "${config.python.pythonPath}",
+        "program": "${file}",
+        "cwd": "${workspaceRoot}",
+        "env": null,
+        "envFile": "${workspaceRoot}/.env",
+        "debugOptions": [
+            "WaitOnAbnormalExit",
+            "WaitOnNormalExit",
+            "RedirectOutput"
+        ]
+        },
         {
-            "name": "Python",
+            "name": "Zerophone Module",
             "type": "python",
+            "args": [
+                "${file}"
+             ],
             "request": "launch",
             "stopOnEntry": true,
             "pythonPath": "${config.python.pythonPath}",
-            "program": "${file}",
+            "module": "unittest",
             "cwd": "${workspaceRoot}",
             "env": null,
             "envFile": "${workspaceRoot}/.env",
@@ -26,6 +45,22 @@
                 "WaitOnNormalExit",
                 "RedirectOutput"
             ]
+        },
+        {
+        "name": "Python",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": true,
+        "pythonPath": "${config.python.pythonPath}",
+        "program": "${file}",
+        "cwd": "${workspaceRoot}",
+        "env": null,
+        "envFile": "${workspaceRoot}/.env",
+        "debugOptions": [
+            "WaitOnAbnormalExit",
+            "WaitOnNormalExit",
+            "RedirectOutput"
+        ]
         },
         {
             "name": "PySpark",

@@ -65,7 +65,7 @@ class DialogBox():
 
     def activate(self):
         """causes dialog to be shown"""
-        logging.info("% activated", self.name)
+        logging.info("%s activated", self.name)
         self.output_device.cursor()
         self.to_foreground()
         self.value_selected = False
