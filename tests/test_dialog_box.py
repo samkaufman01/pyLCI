@@ -2,7 +2,7 @@
 import unittest
 import logging
 import os
-print "os.getcwd()", os.getcwd()
+#print "os.getcwd()", os.getcwd()
 import zerophone.ui.dialog
 from zerophone.output import output
 

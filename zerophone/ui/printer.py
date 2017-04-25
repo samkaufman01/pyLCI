@@ -1,7 +1,7 @@
 from time import sleep
 import logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 def Printer(message, i, o, sleep_time=1, skippable=True):
     """Outputs string data on display as soon as it's called.                                          

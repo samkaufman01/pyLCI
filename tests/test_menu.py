@@ -5,7 +5,7 @@ import os
 import zerophone.ui.menu
 from zerophone.output import output
 LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
-logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TestMenu(unittest.TestCase):

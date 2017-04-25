@@ -14,13 +14,20 @@ import sys
 import traceback
 import types
 import unittest
+import logging
+import os
 
 from fnmatch import fnmatch
 
 __version__ = '0.4.0'
 __all__ = ['DiscoveringTestLoader', 'main', 'defaultTestLoader']
 
-
+#set up logging
+LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
+logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.debug("sys.path=%s", sys.path)
+logger.debug("os.getcwd=%s", os.getcwd())
 if hasattr(types, 'ClassType'):
     class_types = (types.ClassType, type)
 else:
@@ -85,9 +92,10 @@ class DiscoveringTestLoader(unittest.TestLoader):
     sortTestMethodsUsing = cmp
     suiteClass = unittest.TestSuite
     _top_level_dir = None
-
+    logger.debug('entered DiscoveringTestLoader')
     def loadTestsFromTestCase(self, testCaseClass):
         """Return a suite of all tests cases contained in testCaseClass"""
+        logger.debug('entered loadTestsFromTestCase, testCaseClass=%s', testCaseClass)
         if issubclass(testCaseClass, unittest.TestSuite):
             raise TypeError("Test cases should not be derived from TestSuite."
                             " Maybe you meant to derive from TestCase?")
@@ -99,10 +107,14 @@ class DiscoveringTestLoader(unittest.TestLoader):
 
     def loadTestsFromModule(self, module, use_load_tests=True):
         """Return a suite of all tests cases contained in the given module"""
+        logger.debug("entered loadTestsFromModule")
         tests = []
         for name in dir(module):
+            #logger.debug('name=%s', name)
             obj = getattr(module, name)
+            logger.debug('module = %s, name=%s, obj=%s', module, name, obj)
             if isinstance(obj, type) and issubclass(obj, unittest.TestCase):
+                logger.debug('obj=%s, entering loadTestsFromTestCase', obj)
                 tests.append(self.loadTestsFromTestCase(obj))
 
         load_tests = getattr(module, 'load_tests', None)
@@ -182,8 +194,20 @@ class DiscoveringTestLoader(unittest.TestLoader):
         """
         def isTestMethod(attrname, testCaseClass=testCaseClass,
                          prefix=self.testMethodPrefix):
-            return attrname.startswith(prefix) and \
+            function_return = attrname.startswith(prefix) and \
                 hasattr(getattr(testCaseClass, attrname), '__call__')
+            if function_return:
+                logger.debug('function_return=%r', function_return)
+                logger.debug('attrname=%s', attrname)
+                logger.debug('attrname.startswith(prefix)=%s', attrname.startswith(prefix))
+                logger.debug('getattr(testCaseClass, attrname)=%s',
+                             getattr(testCaseClass, attrname))
+                logger.debug('hasattr(getattr(testCaseClass, attrname), "__call__")=%r',
+                             hasattr(getattr(testCaseClass, attrname), '__call__'))
+
+            return function_return
+
+        logger.debug('dir(testCaseClass)=%s', dir(testCaseClass))
         testFnNames = list(filter(isTestMethod, dir(testCaseClass)))
         if self.sortTestMethodsUsing:
             testFnNames.sort(key=_CmpToKey(self.sortTestMethodsUsing))
@@ -225,6 +249,7 @@ class DiscoveringTestLoader(unittest.TestLoader):
             # should we *unconditionally* put the start directory in first
             # in sys.path to minimise likelihood of conflicts between installed
             # modules and development versions?
+            logger.debug("adding %s to sys.path", top_level_dir)
             sys.path.insert(0, top_level_dir)
         self._top_level_dir = top_level_dir
 
@@ -249,7 +274,7 @@ class DiscoveringTestLoader(unittest.TestLoader):
 
         if is_not_importable:
             raise ImportError('Start directory is not importable: %r' % start_dir)
-
+        logger.debug("invoking self._find_tests(start_dir=%s, pattern=%s)", start_dir, pattern)
         tests = list(self._find_tests(start_dir, pattern))
         return self.suiteClass(tests)
 
@@ -274,9 +299,10 @@ class DiscoveringTestLoader(unittest.TestLoader):
     def _find_tests(self, start_dir, pattern):
         """Used by discovery. Yields test suites it loads."""
         paths = os.listdir(start_dir)
-
+        logger.debug('entered _find_tests, len(paths)=%d', len(paths))
         for path in paths:
             full_path = os.path.join(start_dir, path)
+            logger.debug('full_path=%s', full_path)
             if os.path.isfile(full_path):
                 if not VALID_MODULE_NAME.match(path):
                     # valid Python identifiers only
@@ -285,12 +311,15 @@ class DiscoveringTestLoader(unittest.TestLoader):
                     continue
                 # if the test file matches, load it
                 name = self._get_name_from_path(full_path)
+                logger.debug('name=%s', name)
                 try:
                     module = self._get_module_from_name(name)
+                    logger.debug('module=%s', module)
                 except:
                     yield _make_failed_import_test(name, self.suiteClass)
                 else:
                     mod_file = os.path.abspath(getattr(module, '__file__', full_path))
+                    logger.debug('mod_file=%s', mod_file)
                     realpath = os.path.splitext(mod_file)[0]
                     fullpath_noext = os.path.splitext(full_path)[0]
                     if realpath.lower() != fullpath_noext.lower():
@@ -300,6 +329,7 @@ class DiscoveringTestLoader(unittest.TestLoader):
                         msg = ("%r module incorrectly imported from %r. Expected %r. "
                                "Is this module globally installed?")
                         raise ImportError(msg % (mod_name, module_dir, expected_dir))
+                    logger.debug('loadTestsFromModule(%s)', module)
                     yield self.loadTestsFromModule(module)
             elif os.path.isdir(full_path):
                 if not os.path.isfile(os.path.join(full_path, '__init__.py')):
@@ -413,6 +443,7 @@ def _usage_exit(msg=None):
 
 def _do_discovery(argv, verbosity, Loader):
     # handle command line args for test discovery
+    logger.debug("entered _do_discovery")
     parser = optparse.OptionParser()
     parser.add_option('-v', '--verbose', dest='verbose', default=False,
                       help='Verbose output', action='store_true')
@@ -438,6 +469,7 @@ def _do_discovery(argv, verbosity, Loader):
     top_level_dir = options.top
 
     loader = Loader()
+    logger.debug("invoking loader.discover(start_dir=%s, pattern=%s, top_level_dir=%s)", start_dir, pattern, top_level_dir)
     return loader.discover(start_dir, pattern, top_level_dir), verbosity
 
 
@@ -461,9 +493,11 @@ def main(argv=None, testRunner=None, testLoader=None, exit=True, verbosity=1):
         testRunner = unittest.TextTestRunner
     if argv is None:
         argv = sys.argv[1:]
-
+    logger.debug("sys.path before _do_discovery() = %s", sys.path)
     tests, verbosity = _do_discovery(argv, verbosity, testLoader)
-    return _run_tests(tests, testRunner, verbosity, exit)
+    run_tests_result = _run_tests(tests, testRunner, verbosity, exit)
+    logger.debug("sys.path after _do_discovery() = %s", sys.path)
+    return run_tests_result
 
 defaultTestLoader = DiscoveringTestLoader()
 
@@ -478,4 +512,5 @@ if __name__ == '__main__':
         # fix for weird behaviour when run with python -m
         # from a zipped egg.
         sys.argv[0] = 'discover.py'
+    
     main()

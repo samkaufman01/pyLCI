@@ -28,15 +28,21 @@
         ]
         },
         {
-            "name": "Zerophone Module",
+            "name": "Zerophone UnitTest Discovery",
             "type": "python",
             "args": [
-                "${file}"
-             ],
+                    "-s",
+                    "/home/dneary/Documents/vcs/git/zerophone/tests",
+                    "-p",
+                    "test_*.py",
+                    "-t",
+                    "/home/dneary/Documents/vcs/git/zerophone",
+                    "-v"
+                    ],
             "request": "launch",
             "stopOnEntry": true,
             "pythonPath": "${config.python.pythonPath}",
-            "module": "unittest",
+            "program": "/home/dneary/Documents/vcs/git/zerophone/tests/discovery.py",
             "cwd": "${workspaceRoot}",
             "env": null,
             "envFile": "${workspaceRoot}/.env",

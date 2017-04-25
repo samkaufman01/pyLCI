@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 # logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)-15s - %(message)s'
 )
 # ignore PIL debug messages
