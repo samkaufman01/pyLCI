@@ -102,7 +102,10 @@ class DiscoveringTestLoader(unittest.TestLoader):
         testCaseNames = self.getTestCaseNames(testCaseClass)
         if not testCaseNames and hasattr(testCaseClass, 'runTest'):
             testCaseNames = ['runTest']
-        loaded_suite = self.suiteClass(map(testCaseClass, testCaseNames))
+        logger.debug('testCaseClass=%s', testCaseClass)
+        map_result = map(testCaseClass, testCaseNames)
+        logger.debug('map_result=%s', map_result)
+        loaded_suite = self.suiteClass(map_result)
         return loaded_suite
 
     def loadTestsFromModule(self, module, use_load_tests=True):
@@ -207,7 +210,7 @@ class DiscoveringTestLoader(unittest.TestLoader):
 
             return function_return
 
-        logger.debug('dir(testCaseClass)=%s', dir(testCaseClass))
+        logger.debug('dir(testCaseClass) has %d items', len(dir(testCaseClass)))
         testFnNames = list(filter(isTestMethod, dir(testCaseClass)))
         if self.sortTestMethodsUsing:
             testFnNames.sort(key=_CmpToKey(self.sortTestMethodsUsing))

@@ -8,6 +8,8 @@ LOG_FORMAT = '%(levelname)s %(asctime)-15s %(name)s  %(message)s'
 logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+top_level_dir = "/home/dneary/Documents/vcs/git/zerophone"
+
 def debug_all_tests():
     suites = unittest.defaultTestLoader.discover(
         start_dir="/home/dneary/Documents/vcs/git/zerophone/tests",
@@ -51,10 +53,10 @@ def debug_one_test_class():
 def debug_without_discover():
     """simplified test debugging without having to use the opaque test discovery tool"""
     start_dir = "/home/dneary/Documents/vcs/git/zerophone/tests"
-    top_level_dir = "/home/dneary/Documents/vcs/git/zerophone"
 
     #test_class_to_debug = "tests.TestDialogBox"
     module_name = "test_dialog_box"
+    test_method_name = "test_dialog_with_real_output"
     #this assumes your tests are separate from your source code
     #and your tests are stored in a folder name tests
     dotted_module_name = "tests." + module_name
@@ -69,6 +71,7 @@ def debug_without_discover():
     sys.path.insert(0, top_level_dir)
     assert top_level_dir in sys.path
     assert top_level_dir == os.getcwd()
+    assert start_dir == os.path.join(top_level_dir, "tests")
     assert os.path.exists(python_file_location)
 
     logger.debug("importing dotted_module_name %s", dotted_module_name)
@@ -81,11 +84,13 @@ def debug_without_discover():
     #logger.debug('imp.PY_SOURCE=%s', imp.PY_SOURCE)
     #assert getmoduleinfo_module_type == imp.PY_SOURCE
     test_methods = []
+    testsuite = None
     members = inspect.getmembers(import_module)
-    for member in members:
-        logger.debug('type(member)=%s, member=%s', type(member), member)
-        (member_name, member_value) = member
-        logger.debug('member_name=%s, member_value=%s', member_name, member_value)
+    for member_item in members:
+        logger.debug('type(member)=%s, member name =%s', type(member_item), member_item[0])
+        (member_name, member_value) = member_item
+        #logger.debug('member_name=%s contains=%d items', member_name, 0 if member_value is None else len(member_value))
+        logger.debug('member_name=%s contains type %s', member_name, type(member_value))
         if member_name == module_name:
             member_classes = inspect.getmembers(member_value, inspect.isclass)
             logger.debug('member_class count =%d', len(member_classes))
@@ -103,9 +108,33 @@ def debug_without_discover():
                     logger.debug("examining method %s", method)
                     if isTestMethod(method, first_member_class_value, test_method_name_prefix):
                         logger.debug('method %s is a test method', method)
-                        test_methods.append(method)
+                        if method == test_method_name:
+                            logger.debug('found test_method_name=%s', test_method_name)
+                            test_methods.append(method)
+                            logger.debug('first_member_class_value=%s', first_member_class_value)
+                            try:
+                                map_result = map(first_member_class_value, "test_constructor")
+                            except Exception as ex:
+                                logger.error(ex)
+                            logger.debug('map_result=%s', map_result)
+                            testsuite = unittest.TestSuite(map_result)
 
     logger.debug('test_methods=%s', test_methods)
+
+    testrunner = unittest.TextTestRunner()
+    testrunner.run(testsuite)
+
+def debug_one_test():
+    """allows debugging a single test"""
+    assert top_level_dir == os.getcwd()
+    assert top_level_dir not in sys.path
+    sys.path.insert(0, os.getcwd())
+    assert top_level_dir in sys.path
+
+    test_suite = unittest.TestLoader().loadTestsFromName(
+        "tests.test_dialog_box.TestDialogBox.test_constructor")
+    testrunner = unittest.TextTestRunner()
+    testrunner.run(test_suite)
 
 def isTestMethod(attrname, testCaseClass, test_method_name_prefix):
     """returns true if attrname is a test method, false otherwise"""
@@ -128,5 +157,6 @@ def isTestMethod(attrname, testCaseClass, test_method_name_prefix):
 if __name__ == "__main__":
     #debug_one_test_class()
     #debug_all_tests()
-    debug_without_discover()
+    #debug_without_discover()
+    debug_one_test()
 

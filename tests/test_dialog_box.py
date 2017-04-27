@@ -2,6 +2,7 @@
 import unittest
 import logging
 import os
+import sys
 #print "os.getcwd()", os.getcwd()
 import zerophone.ui.dialog
 from zerophone.output import output
@@ -18,6 +19,7 @@ class TestDialogBox(unittest.TestCase):
         """tests constructor"""
         logger.debug("entering DialogBox test_constructor")
         logger.debug("os.getcwd()=%s", os.getcwd())
+        logger.debug('__name__=%s', __name__)
         default_options = "ync"
         output.init("./zerophone/")
         output_device = output.screen
@@ -47,10 +49,10 @@ class TestDialogBox(unittest.TestCase):
 """
 def main():
 
-    default_options = "ync"
-    output.init("./zerophone/")
-    output_device = output.screen
-    dialog_box = zerophone.ui.dialog.DialogBox(default_options, None, output_device)
+    sys.path.insert(0, os.getcwd())
+    test_suite = unittest.TestLoader().loadTestsFromName("tests.test_dialog_box.TestDialogBox.test_constructor")
+    testrunner = unittest.TextTestRunner()
+    testrunner.run(test_suite)
 
 
 if __name__ == "__main__":
