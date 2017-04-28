@@ -10,6 +10,25 @@ logger = logging.getLogger(__name__)
 
 top_level_dir = "/home/dneary/Documents/vcs/git/zerophone"
 
+def debug_one_test():
+    """allows debugging a single test"""
+
+    #importing requires a particular path structure
+    #these import statements verify this path structure
+    assert top_level_dir == os.getcwd()
+    assert top_level_dir not in sys.path
+    sys.path.insert(0, os.getcwd())
+    assert top_level_dir in sys.path
+
+    #test_to_debug = "tests.test_dialog_box.TestDialogBox.test_constructor"
+    test_to_debug = "tests.zerophone_.test_subfolder.TestSubFolder.test_zerophone_import"
+    test_suite = unittest.TestLoader().loadTestsFromName(test_to_debug)
+    testrunner = unittest.TextTestRunner()
+    testrunner.run(test_suite)
+
+
+#all the code from here down is unused
+
 def debug_all_tests():
     suites = unittest.defaultTestLoader.discover(
         start_dir="/home/dneary/Documents/vcs/git/zerophone/tests",
@@ -124,17 +143,7 @@ def debug_without_discover():
     testrunner = unittest.TextTestRunner()
     testrunner.run(testsuite)
 
-def debug_one_test():
-    """allows debugging a single test"""
-    assert top_level_dir == os.getcwd()
-    assert top_level_dir not in sys.path
-    sys.path.insert(0, os.getcwd())
-    assert top_level_dir in sys.path
 
-    test_suite = unittest.TestLoader().loadTestsFromName(
-        "tests.test_dialog_box.TestDialogBox.test_constructor")
-    testrunner = unittest.TextTestRunner()
-    testrunner.run(test_suite)
 
 def isTestMethod(attrname, testCaseClass, test_method_name_prefix):
     """returns true if attrname is a test method, false otherwise"""
