@@ -4,9 +4,12 @@ import os
 from subprocess import call
 from time import sleep
 import argparse
+print os.getcwd()
 #Welcome to pyLCI innards
 #Here, things are about i and o, which are input and output
 #And we output things for debugging, so o goes first.
+
+sys.path.insert(0,"/home/dneary/Documents/vcs/git/zerophone")
 from zerophone.output import output
 
 import logging

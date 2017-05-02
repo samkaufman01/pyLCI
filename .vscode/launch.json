@@ -12,6 +12,22 @@
         "host": "localhost"
     },
     {
+    "name": "zerophone",
+    "type": "python",
+    "request": "launch",
+    "stopOnEntry": true,
+    "pythonPath": "${config.python.pythonPath}",
+    "program": "/home/dneary/Documents/vcs/git/zerophone/zerophone/main.py",
+    "cwd": "${workspaceRoot}/zerophone",
+    "env": null,
+    "envFile": "${workspaceRoot}/.env",
+    "debugOptions": [
+        "WaitOnAbnormalExit",
+        "WaitOnNormalExit",
+        "RedirectOutput"
+    ]
+},
+    {
         "name": "zerophone-tests",
         "type": "python",
         "request": "launch",
@@ -26,7 +42,7 @@
             "WaitOnNormalExit",
             "RedirectOutput"
         ]
-        },
+    },
         {
             "name": "Zerophone UnitTest Discovery",
             "type": "python",

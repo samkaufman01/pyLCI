@@ -4,7 +4,7 @@ import atexit
 from time import sleep
 import Queue
 import logging
-from helpers import read_config
+from zerophone.helpers import read_config
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +26,10 @@ class InputListener():
     reserved_keys = ["KEY_LEFT", "KEY_RIGHT", "KEY_UP", "KEY_DOWN", "KEY_ENTER", "KEY_KPENTER"]
 
     def __init__(self, drivers, keymap=None):
-        """Init function for creating KeyListener object. Checks all the arguments and sets keymap if supplied."""
-        logger.debug("entered InputListener constructor, drivers count = {0}, keymap = {1}".format(len(drivers),keymap))
+        """Init function for creating KeyListener object.
+        Checks all the arguments and sets keymap if supplied."""
+        logger.debug("entered InputListener constructor, drivers count = %d, keymap = %s",
+                     len(drivers), keymap)
         self.drivers = drivers
         self.queue = Queue.Queue()
         if keymap is None: keymap = {} 
@@ -39,7 +41,7 @@ class InputListener():
     def receive_key(self, key):
         """ This is the method that receives keypresses from drivers and puts them into ``self.queue`` for ``self.event_loop`` to receive """
         try:
-            logger.debug("receive_key got key {0}".format(key))
+            logger.debug("receive_key got key %s", key)
             self.queue.put(key)
         except:
             raise #Just collecting possible exceptions for now
@@ -52,14 +54,17 @@ class InputListener():
 
     def remove_streaming(self):
         """Removes a callback for streaming key events, if previously set by any app/UI element."""
+        logger.debug("entered remove_streaming")
         self.streaming = None
 
     def set_callback(self, key_name, callback):
         """Sets a single callback of the listener"""
+        logger.debug("entered set_callback")
         self.keymap[key_name] = callback
 
     def check_special_callback(self, key_name):
         """Raises exceptions upon setting of a special callback on a reserved/taken keyname"""
+        logger.debug("entered check_special_callback")
         if key_name in self.reserved_keys:
             #Trying to set a special callback for a reserved key
             raise CallbackException(1, "Special callback for {} can't be set because it's one of the reserved keys".format(key_name))
@@ -76,6 +81,7 @@ class InputListener():
 
         A maskable callback is global (can be cleared) and will be called upon a keypress 
         unless a callback for the same keyname is already set in keymap."""
+        logger.debug('entered set_maskable_callback key_name=%s', key_name)
         self.check_special_callback(key_name)
         self.maskable_keymap[key_name] = callback
 
@@ -85,6 +91,7 @@ class InputListener():
 
         A nonmaskable callback is global (never cleared) and will be called upon a keypress 
         even if a callback for the same keyname is already set in ``keymap`` (callback from the ``keymap`` won't be called)."""
+        
         self.check_special_callback(key_name)
         self.nonmaskable_keymap[key_name] = callback
 
