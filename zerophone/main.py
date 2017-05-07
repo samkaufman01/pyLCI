@@ -35,7 +35,7 @@ signal.signal(signal.SIGUSR1, dumpthreads)
 
 logger.debug("entered output.init(), os.getcwd()=%s", os.getcwd())
 #These lines are here so that welcome message stays on the screen a little longer:
-output.init()
+output.init("./zerophone/")
 o = output.screen
 from ui import Printer, Menu
 
@@ -44,7 +44,7 @@ try: #If there's an internal error, we show it on display and exit
     from apps.manager import AppManager
     #Now we init the input subsystem
     from input import input
-    input.init()
+    input.init("./zerophone/")
     i = input.listener
 except Exception as ex:
     logger.error("input.init() error: %s", ex)
@@ -89,7 +89,7 @@ def exception_wrapper(callback):
 
 def launch(name=None, debug=False):
     """Function that launches pyLCI, either in full mode or single-app mode (if ``name`` kwarg is passed)."""
-    app_man = AppManager("apps", Menu, Printer, i, o)
+    app_man = AppManager("zerophone/apps", Menu, Printer, i, o)
     if name != None:
         
         name = name.rstrip('/') #If using autocompletion from main folder, it might append a / at the name end, which isn't acceptable for load_app

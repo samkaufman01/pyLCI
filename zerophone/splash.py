@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def splash(i, o):
     """Displays splash screen"""
     logger.debug("entering splash")
-    image = PIL.Image.open("splash.png").convert('L')
+    image = PIL.Image.open("./zerophone/splash.png").convert('L')
     image = invert(image)
     image = image.convert(o.device.mode)
     #note:  the splash screen image size must match the screen size

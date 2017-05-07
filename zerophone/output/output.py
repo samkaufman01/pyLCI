@@ -1,7 +1,7 @@
-from zerophone.helpers.config_parse import read_config
 import importlib
 import os
 import logging
+from zerophone.helpers.config_parse import read_config
 logger = logging.getLogger(__name__)
 screen = None
 
@@ -15,7 +15,7 @@ def init(path_to_config_json=None):
     logger.debug("entered output.init(), os.getcwd()=%s", os.getcwd())
     global screen
 
-    config_file="config.json"
+    config_file = "config.json"
     if path_to_config_json is not None:
         config_file = path_to_config_json + config_file
     config = read_config(config_file)

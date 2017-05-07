@@ -207,13 +207,16 @@ class InputListener():
         
 
 
-def init():
+def init(path_to_config_json=None):
     """ This function is called by main.py to read the input configuration, pick the corresponding drivers and initialize InputListener.
  
     It also sets ``listener`` globals of ``input`` module with driver and listener respectively, as well as registers ``listener.stop()`` function to be called when script exits since it's in a blocking non-daemon thread."""
     logger.debug("entered init")
     global listener
-    config = read_config("config.json")
+    config_file = "config.json"
+    if path_to_config_json is not None:
+        config_file = path_to_config_json + config_file
+    config = read_config(config_file)
     input_configs = config["input"]
     drivers = []
     for input_config in input_configs:
