@@ -19,17 +19,17 @@ def init_app(input, output):
     i = input; o = output
 
 def send_message_callback():
-    '''menu callback, triggered when user chooses send signal message'''
+    '''menu callback, triggered when user chooses send message'''
     _logger.debug('entered send_message_callback')
     SENDER_PHONE_NUMBER = "+15304548041"
     RECEIVER_PHONE_NUMBER = "+13513331152"
     message_body = "hello zerophone world"
-    return_string = zerophone.apps.signal.main.send_message(
+    zerophone.apps.signal.main.send_message(
         SENDER_PHONE_NUMBER, RECEIVER_PHONE_NUMBER, message_body)
     Printer("sent message", i, o)
 
 def receive_message_callback():
-    '''menu callback, triggered when user chooses receive signal message'''
+    '''menu callback, triggered when user chooses receive message'''
     _logger.debug('entered receive_message_callback')
     Printer("received messages", i, o)
 
@@ -48,6 +48,10 @@ callback = show_menu
 def send_message(from_phone_number, to_phone_number, message_body):
     '''sends a text message.  attachments not supported.'''
     _logger.debug('entered send_message')
+    _logger.debug('from_phone_number = %s', from_phone_number)
+    _logger.debug('to_phone_number = %s', to_phone_number)
+    _logger.debug('message_body = %s', message_body)
+
     command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
     args = [command_to_execute, "-u", from_phone_number,
             "send", "-m", message_body, to_phone_number]
@@ -58,6 +62,8 @@ def send_message(from_phone_number, to_phone_number, message_body):
 def receive_messages(phone_number):
     '''receives all messages for associated phone number and returns them as a single string'''
     _logger.debug('entered receive_messages')
+    _logger.debug('phone_number = %s', phone_number)
+
     command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
     args = [command_to_execute, "-u", phone_number, "receive"]
     messages_as_string = subprocess.check_output(args)

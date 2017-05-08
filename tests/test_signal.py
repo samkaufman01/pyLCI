@@ -15,13 +15,15 @@ _logger.debug('executing name %s in file %s', __name__, __file__)
 
 SENDER_PHONE_NUMBER = "+15304548041"
 RECEIVER_PHONE_NUMBER = "+13513331152"
+#this phone number was created during testing of register/verify
+EXTRA_PHONE_NUMBER = "+13513331154"
 
 class TestSignalApp(unittest.TestCase):
     '''tests the use of signal-cli via the subprocess module in python.
        this will be used in building a signal app in the zerophone'''
 
     def test_echo(self):
-        '''tests subprocess of echoing a simple string'''
+        '''tests python subprocess of echoing a simple string'''
         string_to_echo = "Hello World!"
         return_string = subprocess.check_output(["echo", string_to_echo])
         _logger.debug('return_string = %s', return_string)
@@ -50,7 +52,7 @@ class TestSignalApp(unittest.TestCase):
 
     def test_signal_send_and_receive(self):
         '''tests sending and receiving a messsage,
-        this allows verification the message body didn't change'''
+        this allows verification the message body didn't change when transmitted through Signal'''
         _logger.debug('entered test_signal_send_and_receive')
         time_stamp = str(datetime.now())
         message_body = "a most excellently constructed message built at {0}".format(time_stamp)
@@ -62,3 +64,33 @@ class TestSignalApp(unittest.TestCase):
         receive_return_string = zerophone.apps.signal.main.receive_messages(RECEIVER_PHONE_NUMBER)
         _logger.debug('receive_return_string = %s', receive_return_string)
         self.assertIn(message_body, receive_return_string)
+
+    def test_signal_register(self):
+        '''tests registering a new phone number with signal.
+           the phone number must be able to receive an sms.
+           the phone number can only be registered once.
+           After sending the register request, an SMS with a Signal
+           verification code will be sent to the phone.
+           Use the Signal verification code (quickly) to verify
+           the phone number'''
+        _logger.debug('entered test_signal_register')
+        #make sure to include the + sign at the beginning of the phone number
+        new_phone_number = "+13513331154"
+        #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +15304548041 register
+        command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
+        args = [command_to_execute, "-u", new_phone_number, "register"]
+        return_string = subprocess.check_output(args)
+        _logger.debug('return_string = %s', return_string)
+        self.assertEqual('', return_string)
+
+    def test_signal_verify(self):
+        '''tests verifying a phone number with a Signal verification code'''
+        _logger.debug('entered test_signal_verify')
+        #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +15304548041 verify 627-717
+        phone_number = "+13513331154"
+        verify_code = "803-071"
+        command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
+        args = [command_to_execute, "-u", phone_number, "verify", verify_code]
+        return_string = subprocess.check_output(args)
+        _logger.debug('return_string = %s', return_string)
+        self.assertEqual('', return_string)

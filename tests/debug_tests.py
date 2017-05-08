@@ -21,7 +21,7 @@ def debug_one_test():
     sys.path.insert(0, os.getcwd())
     assert TOP_LEVEL_DIR in sys.path
 
-    test_to_debug = "tests.test_signal.TestSignalApp.test_signal_receive"
+    test_to_debug = "tests.test_signal.TestSignalApp.test_signal_register"
     #test_to_debug = "tests.test_snippets.TestUnitTesting.test_constructor"
     test_suite = unittest.TestLoader().loadTestsFromName(test_to_debug)
     testrunner = unittest.TextTestRunner()
