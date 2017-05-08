@@ -4,7 +4,7 @@ import unittest
 import time
 from datetime import datetime
 import logging
-import zerophone.apps.signal.main
+import zerophone.apps.signal.signal_cli_commands
 
 #set up logging
 
@@ -18,14 +18,15 @@ RECEIVER_PHONE_NUMBER = "+13513331152"
 #this phone number was created during testing of register/verify
 EXTRA_PHONE_NUMBER = "+13513331154"
 
-class TestSignalApp(unittest.TestCase):
+class TestSignalCli(unittest.TestCase):
     '''tests the use of signal-cli via the subprocess module in python.
        this will be used in building a signal app in the zerophone'''
 
     def test_echo(self):
         '''tests python subprocess of echoing a simple string'''
         string_to_echo = "Hello World!"
-        return_string = subprocess.check_output(["echo", string_to_echo])
+        args = ["echo", string_to_echo]
+        return_string = subprocess.check_output(args, stderr=subprocess.STDOUT)
         _logger.debug('return_string = %s', return_string)
         #echo adds a line feed to the input string.  who knew.
         self.assertEqual(string_to_echo + '\n', return_string)
@@ -37,7 +38,7 @@ class TestSignalApp(unittest.TestCase):
         message_body = "a most excellently constructed message built at {0}".format(time_stamp)
         _logger.debug('message_body = %s', message_body)
 
-        return_string = zerophone.apps.signal.main.send_message(
+        return_string = zerophone.apps.signal.signal_cli_commands.send_message(
             SENDER_PHONE_NUMBER, RECEIVER_PHONE_NUMBER, message_body)
         self.assertEqual('', return_string)
 
@@ -47,7 +48,8 @@ class TestSignalApp(unittest.TestCase):
         _logger.debug('entered test_signal_receive')
         #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +13513331152 receive
 
-        return_string = zerophone.apps.signal.main.receive_messages(RECEIVER_PHONE_NUMBER)
+        return_string = zerophone.apps.signal.signal_cli_commands.receive_messages(
+            RECEIVER_PHONE_NUMBER)
         self.assertNotEqual('', return_string)
 
     def test_signal_send_and_receive(self):
@@ -57,30 +59,28 @@ class TestSignalApp(unittest.TestCase):
         time_stamp = str(datetime.now())
         message_body = "a most excellently constructed message built at {0}".format(time_stamp)
         _logger.debug('message_body = %s', message_body)
-        send_return_string = zerophone.apps.signal.main.send_message(
+        send_return_string = zerophone.apps.signal.signal_cli_commands.send_message(
             SENDER_PHONE_NUMBER, RECEIVER_PHONE_NUMBER, message_body)
         self.assertEqual('', send_return_string)
         time.sleep(2)
-        receive_return_string = zerophone.apps.signal.main.receive_messages(RECEIVER_PHONE_NUMBER)
+        receive_return_string = \
+            zerophone.apps.signal.signal_cli_commands.receive_messages(RECEIVER_PHONE_NUMBER)
         _logger.debug('receive_return_string = %s', receive_return_string)
         self.assertIn(message_body, receive_return_string)
 
     def test_signal_register(self):
         '''tests registering a new phone number with signal.
-           the phone number must be able to receive an sms.
-           the phone number can only be registered once.
-           After sending the register request, an SMS with a Signal
-           verification code will be sent to the phone.
-           Use the Signal verification code (quickly) to verify
-           the phone number'''
+            the phone number must be able to receive an sms.
+            the phone number can only be registered once.
+            After sending the register request, an SMS with a Signal
+            verification code will be sent to the phone.
+            Use the Signal verification code (quickly) to verify
+            the phone number'''
         _logger.debug('entered test_signal_register')
         #make sure to include the + sign at the beginning of the phone number
         new_phone_number = "+13513331154"
-        #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +15304548041 register
-        command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
-        args = [command_to_execute, "-u", new_phone_number, "register"]
-        return_string = subprocess.check_output(args)
-        _logger.debug('return_string = %s', return_string)
+        return_string = zerophone.apps.signal.signal_cli_commands.register_phone_number(
+            new_phone_number)
         self.assertEqual('', return_string)
 
     def test_signal_verify(self):
@@ -89,8 +89,6 @@ class TestSignalApp(unittest.TestCase):
         #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +15304548041 verify 627-717
         phone_number = "+13513331154"
         verify_code = "803-071"
-        command_to_execute = "/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli"
-        args = [command_to_execute, "-u", phone_number, "verify", verify_code]
-        return_string = subprocess.check_output(args)
-        _logger.debug('return_string = %s', return_string)
+        return_string = zerophone.apps.signal.signal_cli_commands.verify_phone_number(
+            phone_number, verify_code)
         self.assertEqual('', return_string)
