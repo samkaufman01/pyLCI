@@ -44,7 +44,8 @@ class Checkbox():
         
         Args:
 
-            * ``contents``: a list of element descriptions, which can be constructed as described in the Checkbox object's docstring.
+            * ``contents``: a list of element descriptions, which can be constructed as described
+             in the Checkbox object's docstring.
             * ``i``, ``o``: input&output device objects
 
         Kwargs:

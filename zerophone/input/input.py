@@ -221,7 +221,7 @@ def init(path_to_config_json=None):
     drivers = []
     for input_config in input_configs:
         driver_name = input_config["driver"]
-        driver_module = importlib.import_module("input.drivers."+driver_name)
+        driver_module = importlib.import_module("zerophone.input.drivers."+driver_name)
         logger.debug("input driver_name : {0}, driver_module = {1}".format(driver_name, driver_module))
         args = input_config["args"] if "args" in input_config else []
         kwargs = input_config["kwargs"] if "kwargs" in input_config else {}

@@ -38,7 +38,7 @@ def receive_message_menu_callback():
 
 def show_menu_callback():
     '''shows the menu for the signal app'''
-    _logger.debug('entered show_menu')
+    _logger.debug('entered show_menu_callback')
     menu_contents = []
     menu_contents.append(["send message", send_message_menu_callback])
     menu_contents.append(["receive message(s)", receive_message_menu_callback])

@@ -15,7 +15,7 @@ _logger.debug('executing name %s in file %s', __name__, __file__)
 
 SENDER_PHONE_NUMBER = "+15304548041"
 RECEIVER_PHONE_NUMBER = "+13513331152"
-#this phone number was created during testing of register/verify
+#this phone number was registered during testing of register/verify
 EXTRA_PHONE_NUMBER = "+13513331154"
 
 class TestSignalCli(unittest.TestCase):
@@ -30,6 +30,15 @@ class TestSignalCli(unittest.TestCase):
         _logger.debug('return_string = %s', return_string)
         #echo adds a line feed to the input string.  who knew.
         self.assertEqual(string_to_echo + '\n', return_string)
+
+    def test_signal_get_version(self):
+        '''tests ability to run signal-cli -v and get version.
+           if this fails, signal-cli is likely not in PATH'''
+        _logger.debug('entered test_signal_get_version')
+        args = ["signal-cli", "-v"]
+        return_string = subprocess.check_output(args, stderr=subprocess.STDOUT)
+        _logger.debug('return_string = %s', return_string)
+        self.assertEqual(return_string, 'signal-cli 0.5.5\n', "Is signal-cli in your PATH?")
 
     def test_signal_send_message(self):
         '''tests sending a single signal text message, no attachments'''
@@ -46,7 +55,6 @@ class TestSignalCli(unittest.TestCase):
         '''tests signal receiving message(s), assumes one has already been sent
            so there is something to receive'''
         _logger.debug('entered test_signal_receive')
-        #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +13513331152 receive
 
         return_string = zerophone.apps.signal.signal_cli_commands.receive_messages(
             RECEIVER_PHONE_NUMBER)
@@ -68,6 +76,7 @@ class TestSignalCli(unittest.TestCase):
         _logger.debug('receive_return_string = %s', receive_return_string)
         self.assertIn(message_body, receive_return_string)
 
+    @unittest.skip("skip registering numbers until there is an automated way to get verify codes")
     def test_signal_register(self):
         '''tests registering a new phone number with signal.
             the phone number must be able to receive an sms.
@@ -83,12 +92,12 @@ class TestSignalCli(unittest.TestCase):
             new_phone_number)
         self.assertEqual('', return_string)
 
+    @unittest.skip("skip registering numbers until there is an automated way to get verify codes")
     def test_signal_verify(self):
         '''tests verifying a phone number with a Signal verification code'''
         _logger.debug('entered test_signal_verify')
-        #/home/dneary/Downloads/2017/signal-cli-0.5.5/bin/signal-cli -u +15304548041 verify 627-717
         phone_number = "+13513331154"
-        verify_code = "803-071"
+        verify_code = "694-676"
         return_string = zerophone.apps.signal.signal_cli_commands.verify_phone_number(
             phone_number, verify_code)
         self.assertEqual('', return_string)
